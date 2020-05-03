@@ -7,17 +7,17 @@ import PreviousReminder from '../../shared/PreviousReminder/PreviousReminder'
 export class DashBoard extends Component {
   render() {
     return (
-      <div class='jumbotron jumbotron-fluid'>
-        <div class='container'>
-          <h1 class='display-4'>You have unsettled Reports!</h1>
-          <hr class='my-4' />
+      <div className='jumbotron jumbotron-fluid'>
+        <div className='container'>
+          <h1 className='display-4'>You have unsettled Reports!</h1>
+          <hr className='my-4' />
           <div className='row'>
             <div className='col'>
-              <h1 class='font-weight-light'>Today</h1>
+              <h1 className='font-weight-light'>Today</h1>
               <TodayReminder />
             </div>
             <div className='col'>
-              <h1 class='font-weight-light'>Previous</h1>
+              <h1 className='font-weight-light'>Previous</h1>
               <PreviousReminder />
             </div>
           </div>

@@ -4,12 +4,17 @@ import { Link } from 'react-router-dom'
 class NavBar extends React.Component {
   render() {
     return (
-      <nav class='navbar navbar-expand-lg navbar-light bg-light'>
-        <a class='navbar-brand' href='#'>
-          MCB Gas
-        </a>
+      <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+        <Link
+          to='/home'
+          style={{ color: 'inherit', textDecoration: 'inherit' }}
+          className='navbar-brand'
+        >
+          MCB
+        </Link>
+
         <button
-          class='navbar-toggler'
+          className='navbar-toggler'
           type='button'
           data-toggle='collapse'
           data-target='#navbarNavDropdown'
@@ -17,15 +22,15 @@ class NavBar extends React.Component {
           aria-expanded='false'
           aria-label='Toggle navigation'
         >
-          <span class='navbar-toggler-icon'></span>
+          <span className='navbar-toggler-icon'></span>
         </button>
-        <div class='collapse navbar-collapse' id='navbarNavDropdown'>
-          <ul class='navbar-nav'>
-            <li class='nav-item dropdown'>
+        <div className='collapse navbar-collapse' id='navbarNavDropdown'>
+          <ul className='navbar-nav'>
+            <li className='nav-item dropdown'>
               <Link
                 to='/addreport'
                 style={{ color: 'inherit', textDecoration: 'inherit' }}
-                class='nav-link dropdown-toggle'
+                className='nav-link dropdown-toggle'
                 id='navbarDropdownMenuLink'
                 role='button'
                 data-toggle='dropdown'
@@ -36,13 +41,13 @@ class NavBar extends React.Component {
               </Link>
 
               <div
-                class='dropdown-menu'
+                className='dropdown-menu'
                 aria-labelledby='navbarDropdownMenuLink'
               >
                 <Link
                   to='/addreport'
                   style={{ color: 'inherit', textDecoration: 'inherit' }}
-                  class='dropdown-item'
+                  className='dropdown-item'
                 >
                   Add
                 </Link>
@@ -50,15 +55,17 @@ class NavBar extends React.Component {
                 <Link
                   to='/xD'
                   style={{ color: 'inherit', textDecoration: 'inherit' }}
-                  class='dropdown-item'
+                  className='dropdown-item'
                 >
                   Summary
                 </Link>
               </div>
             </li>
 
-            <li class='nav-item'>
-              <Link class='nav-link'>Features</Link>
+            <li className='nav-item'>
+              <Link to='/xD' className='nav-link'>
+                Features
+              </Link>
             </li>
           </ul>
         </div>

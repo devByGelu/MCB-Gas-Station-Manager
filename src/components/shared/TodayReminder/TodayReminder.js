@@ -1,61 +1,64 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-export class TodayReminder extends Component {
-  render() {
-    return (
-      <div>
-        <div className='card'>
-          <div className='card-body'>
-            <h5 className='card-title'>March 20 2020</h5>
+import { selectShiftFormDate } from '../../../actions/index'
+const today = new Date().toISOString().slice(0, 10)
 
-            <div className='row'>
-              <div className='col'>
-                <h1>Morning</h1>
-              </div>
-              <div className='col'>
-                <Link
-                  to='/addreport/new'
-                  style={{ color: 'inherit', textDecoration: 'inherit' }}
-                >
-                  <button
-                    type='button'
-                    class='btn btn-primary btn-lg btn-block'
-                  >
-                    Add
-                  </button>
-                </Link>
-              </div>
+const TodayReminder = (props) => {
+  return (
+    <div>
+      <div className='card'>
+        <div className='card-body'>
+          <h5 className='card-title'>March 20 2020</h5>
+
+          <div className='row'>
+            <div className='col'>
+              <h1>Morning</h1>
             </div>
-
-            <div className='row'>
-              <div className='col'>
-                <h1>Afternoon</h1>
-              </div>
-              <div className='col'>
-                <Link
-                  to='/addreport/new'
-                  style={{ color: 'inherit', textDecoration: 'inherit' }}
+            <div className='col'>
+              <Link
+                to='/addreport/new'
+                style={{ color: 'inherit', textDecoration: 'inherit' }}
+              >
+                <button
+                  type='button'
+                  className='btn btn-primary btn-lg btn-block'
+                  onClick={() => props.selectShiftFormDate(today, 'AM')}
                 >
-                  <button
-                    type='button'
-                    class='btn btn-primary btn-lg btn-block'
-                  >
-                    Add
-                  </button>
-                </Link>
-              </div>
+                  Add
+                </button>
+              </Link>
+            </div>
+          </div>
+
+          <div className='row'>
+            <div className='col'>
+              <h1>Afternoon</h1>
+            </div>
+            <div className='col'>
+              <Link
+                to='/addreport/new'
+                style={{ color: 'inherit', textDecoration: 'inherit' }}
+              >
+                <button
+                  type='button'
+                  className='btn btn-primary btn-lg btn-block'
+                  onClick={() => props.selectShiftFormDate(today, 'PM')}
+                >
+                  Add
+                </button>
+              </Link>
             </div>
           </div>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => {
+  return { shiftFormDate: state.shiftFormDate }
+}
 
-const mapDispatchToProps = {}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TodayReminder)
+export default connect(mapStateToProps, { selectShiftFormDate })(TodayReminder)

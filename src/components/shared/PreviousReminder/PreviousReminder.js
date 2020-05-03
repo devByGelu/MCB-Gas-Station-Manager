@@ -7,21 +7,20 @@ export class PreviousReminder extends Component {
       <div>
         <div className='card'>
           <div className='card-body'>
-            <button type='button' class='btn btn-primary mr-2 mb-2'>
-              February 2020 <span class='badge badge-light'>9</span>
+            <button type='button' className='btn btn-primary mr-2 mb-2'>
+              February 2020 <span className='badge badge-light'>9</span>
             </button>
-            <button type='button' class='btn btn-primary mr-2 mb-2'>
-              February 2020 <span class='badge badge-light'>9</span>
-            </button>
-
-            <button type='button' class='btn btn-primary mr-2 mb-2'>
-              February 2020 <span class='badge badge-light'>9</span>
+            <button type='button' className='btn btn-primary mr-2 mb-2'>
+              February 2020 <span className='badge badge-light'>9</span>
             </button>
 
-            <button type='button' class='btn btn-primary mr-2 mb-2'>
-              February 2020 <span class='badge badge-light'>9</span>
+            <button type='button' className='btn btn-primary mr-2 mb-2'>
+              February 2020 <span className='badge badge-light'>9</span>
             </button>
 
+            <button type='button' className='btn btn-primary mr-2 mb-2'>
+              February 2020 <span className='badge badge-light'>9</span>
+            </button>
           </div>
         </div>
       </div>

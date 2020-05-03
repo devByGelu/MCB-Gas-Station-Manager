@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
-import postsReducer from './postsReducer'
-import usersReducer from './usersReducer'
+import shiftFormDateReducer from './shiftFormDateReducer'
 
 // const songsReducer = () => {
 //   return [
@@ -23,6 +22,5 @@ import usersReducer from './usersReducer'
 // }
 
 export default combineReducers({
-  posts: postsReducer,
-  users: usersReducer
+  shiftFormDate: shiftFormDateReducer,
 })
