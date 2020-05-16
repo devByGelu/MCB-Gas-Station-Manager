@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { selectShiftFormDate } from '../../../actions/index'
+
 const today = new Date().toISOString().slice(0, 10)
 
 const TodayReminder = (props) => {

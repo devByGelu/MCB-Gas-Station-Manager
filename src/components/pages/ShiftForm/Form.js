@@ -1,83 +1,78 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import { Field, reduxForm } from 'redux-form'
 
-export const Form = () => {
+import ReportsAPI from '../../../apis/ReportsAPI'
+import PriceTable from './PriceTable'
+import EmployeeChooser from './EmployeeChooser'
+import PumpSubform from './PumpSubform'
+
+const onSubmit = async (values) => {
+  try {
+    // setLoading(true)
+    // let res = await ReportsAPI.post('/', { title: 'HELLO WORLD' })
+  } catch (error) {
+    console.log(error.response)
+  }
+  // setLoading(false)
+}
+
+export const Form = (props) => {
+  const isActiveInPump1 = (productName) => {
+    return productName === props.pump1ActiveNavLink ? '' : 'd-none'
+  }
+  const isActiveInPump2 = (productName) => {
+    return productName === props.pump2ActiveNavLink ? '' : 'd-none'
+  }
+  const isActiveInPump3 = (productName) => {
+    return productName === props.pump3ActiveNavLink ? '' : 'd-none'
+  }
+  const isActiveInPump4 = (productName) => {
+    return productName === props.pump4ActiveNavLink ? '' : 'd-none'
+  }
   return (
-    <div>
-      <div className='input-group mb-3'>
-        <div className='input-group-prepend'>
-          <span className='input-group-text' id='basic-addon1'>
-            @
-          </span>
-        </div>
-        <input
-          type='text'
-          className='form-control'
-          placeholder='Username'
-          aria-label='Username'
-          aria-describedby='basic-addon1'
-        />
-      </div>
+    <React.Fragment>
+      <div className='container'>
+        <form onSubmit={props.handleSubmit}>
+          <div className='form-row'>
+            <EmployeeChooser name='Cashier' />
+            <EmployeeChooser name='Pump-Attendant' onChangeEmployeehandler='' />
+          </div>
 
-      <div className='input-group mb-3'>
-        <input
-          type='text'
-          className='form-control'
-          placeholder="Recipient's username"
-          aria-label="Recipient's username"
-          aria-describedby='basic-addon2'
-        />
-        <div className='input-group-append'>
-          <span className='input-group-text' id='basic-addon2'>
-            @example.com
-          </span>
-        </div>
-      </div>
+          <div className='form-row'>
+            <PriceTable />
+          </div>
 
-      <label htmlFor='basic-url'>Your vanity URL</label>
-      <div className='input-group mb-3'>
-        <div className='input-group-prepend'>
-          <span className='input-group-text' id='basic-addon3'>
-            https://example.com/users/
-          </span>
-        </div>
-        <input
-          type='text'
-          className='form-control'
-          id='basic-url'
-          aria-describedby='basic-addon3'
-        />
-      </div>
+          <div className='form-row'>
+            <PumpSubform pumpNumber='1' isActive={isActiveInPump1} />
+          </div>
+          <div className='form-row'>
+            <PumpSubform pumpNumber='2' isActive={isActiveInPump2} />
+          </div>
+          <div className='form-row'>
+            <PumpSubform pumpNumber='3' isActive={isActiveInPump3} />
+          </div>
+          <div className='form-row'>
+            <PumpSubform pumpNumber='4' isActive={isActiveInPump4} />
+          </div>
 
-      <div className='input-group mb-3'>
-        <div className='input-group-prepend'>
-          <span className='input-group-text'>$</span>
-        </div>
-        <input
-          type='text'
-          className='form-control'
-          aria-label='Amount (to the nearest dollar)'
-        />
-        <div className='input-group-append'>
-          <span className='input-group-text'>.00</span>
-        </div>
+          <button type='submit'>Try me</button>
+        </form>
       </div>
-
-      <div className='input-group'>
-        <div className='input-group-prepend'>
-          <span className='input-group-text'>With textarea</span>
-        </div>
-        <textarea
-          className='form-control'
-          aria-label='With textarea'
-        ></textarea>
-      </div>
-    </div>
+    </React.Fragment>
   )
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => {
+  return {
+    pump1ActiveNavLink: state.pump1ActiveNavLink.product,
+    pump2ActiveNavLink: state.pump2ActiveNavLink.product,
+    pump3ActiveNavLink: state.pump3ActiveNavLink.product,
+    pump4ActiveNavLink: state.pump4ActiveNavLink.product,
+  }
+}
 
-const mapDispatchToProps = {}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Form)
+export default connect(
+  mapStateToProps,
+  null
+)(reduxForm({ form: 'shiftForm', onSubmit: onSubmit })(Form))

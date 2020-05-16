@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import NavBar from './shared/Navigation Bar/NavBar'
 import DashBoard from './pages/SettleReport/DashBoard'
 import Form from './pages/ShiftForm/Form'
+import ErrorPage from './shared/ErrorPage/ErrorPage'
 
 const App = () => {
   return (
@@ -12,6 +13,10 @@ const App = () => {
       <Switch>
         <Route path='/addreport/new' component={Form} />
         <Route path='/addreport' exact component={DashBoard} />
+        <Route
+          path='/error-page'
+          render={(props) => <ErrorPage {...props} />}
+        />
       </Switch>
     </Router>
   )

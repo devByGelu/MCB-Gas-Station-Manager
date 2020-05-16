@@ -1,26 +1,17 @@
 import { combineReducers } from 'redux'
+import { reducer as formReducer } from 'redux-form'
 import shiftFormDateReducer from './shiftFormDateReducer'
-
-// const songsReducer = () => {
-//   return [
-//     {
-//       title: 'Song1',
-//       duration: '3:21',
-//     },
-//     {
-//       title: 'Song2',
-//       duration: '3:22',
-//     },
-//   ]
-// }
-
-// const selectedSongReducer = (selectedSong = null, action) => {
-//   if (action.type === 'SONG_SELECTED') {
-//     return action.payload
-//   }
-//   return selectedSong
-// }
-
+import pump1ActiveNavLinkReducer from './pump1ActiveNavLinkReducer'
+import pump2ActiveNavLinkReducer from './pump2ActiveNavLinkReducer'
+import pump3ActiveNavLinkReducer from './pump3ActiveNavLinkReducer'
+import pump4ActiveNavLinkReducer from './pump4ActiveNavLinkReducer'
+import employeesReducer from './employeesReducer'
 export default combineReducers({
   shiftFormDate: shiftFormDateReducer,
+  pump1ActiveNavLink: pump1ActiveNavLinkReducer,
+  pump2ActiveNavLink: pump2ActiveNavLinkReducer,
+  pump3ActiveNavLink: pump3ActiveNavLinkReducer,
+  pump4ActiveNavLink: pump4ActiveNavLinkReducer,
+  employees: employeesReducer,
+  form: formReducer,
 })
