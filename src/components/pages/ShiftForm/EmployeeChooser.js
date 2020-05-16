@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
 import { fetchEmployees } from '../../../actions/index'
-
 const EmployeeChooser = (props) => {
   useEffect(() => {
     props.fetchEmployees()
@@ -22,13 +21,18 @@ const EmployeeChooser = (props) => {
         }}
       />
     )
-  else if (props.employees.loading)
+  else if (props.employees.loading || !props.employees.results)
     return (
       <div class='spinner-border text-primary' role='status'>
         <span class='sr-only'>Loading...</span>
       </div>
     )
-  else
+  else {
+    const employeesList = props.employees.results.map((employee) => (
+      <option key={employee._id} value={employee._id}>
+        {employee.fName+' '+employee.mInit+' '+employee.lName}
+      </option>
+    ))
     return (
       <div className='input-group mb-3'>
         <div className='input-group-prepend'>
@@ -43,11 +47,11 @@ const EmployeeChooser = (props) => {
           name={props.name}
         >
           <option value='DEFAULT'>Choose...</option>
-          <option value='1'>Employee1</option>
-          <option value='2'>Employee2</option>
+          {employeesList}
         </Field>
       </div>
     )
+  }
 }
 
 const mapStateToProps = (state) => {
