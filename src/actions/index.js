@@ -52,3 +52,28 @@ export const fetchEmployees = () => async (dispatch) => {
     })
   }
 }
+
+export const addPumpAttendantOnForm = (generatedId) => ({
+  type: 'SHIFT_FORM_ADD_PA',
+  payload: generatedId,
+})
+
+export const removePumpAttendantOnForm = (id) => ({
+  type: 'SHIFT_FORM_MIN_PA',
+  payload: id,
+})
+
+export const updatePumpAttendantOnForm = (selectorId, selected) => ({
+  type: 'SHIFT_FORM_UPDATE_PA',
+  payload: { selectorId, selected },
+})
+
+export const registerMainFormNavLinks = (labels) => ({
+  type: 'MAIN_FORM_REGISTER_LINKS',
+  payload: labels,
+})
+
+export const toggleMainFormNavLink = (label) => ({
+  type: 'TOGGLE_MAIN_FORM_NAV_LINK',
+  payload: label,
+})

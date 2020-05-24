@@ -12,23 +12,22 @@ function PumpSubform(props) {
           <div class='card-header'>
             <ul class='nav nav-pills card-header-pills'>
               <PumpSubformNavLink label={props.pumpNumber} />
+            </ul>
+            <ul class='ml-1 nav nav-pills card-header-pills'>
               <PumpSubformNavLink
                 label='Diesel'
                 isClickAble={true}
                 pumpNumber={props.pumpNumber}
-
               />
               <PumpSubformNavLink
                 label='Accelrate'
                 isClickAble={true}
                 pumpNumber={props.pumpNumber}
-
               />
               <PumpSubformNavLink
                 label='JxPremium'
                 isClickAble={true}
                 pumpNumber={props.pumpNumber}
-
               />
             </ul>
           </div>

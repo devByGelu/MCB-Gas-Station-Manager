@@ -1,63 +1,115 @@
-import React, { useEffect } from 'react'
-import { Field } from 'redux-form'
+import React from 'react'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import { Field } from 'redux-form'
+import nextId from 'react-id-generator'
 
-import { fetchEmployees } from '../../../actions/index'
+import { updatePumpAttendantOnForm } from '../../../actions/index'
+import { removePumpAttendantOnForm } from '../../../actions/index'
+import { addPumpAttendantOnForm } from '../../../actions/index'
+
 const EmployeeChooser = (props) => {
-  useEffect(() => {
-    props.fetchEmployees()
-  }, [props.fetchEmployees])
+  const employeesList = (employees, selected) =>
+    employees.map((employee) => {
+      if (!selected)
+        //for Cashier only
+        return (
+          <option key={employee._id} value={employee._id}>
+            {employee.fName + ' ' + employee.mInit + ' ' + employee.lName}
+          </option>
+        )
+      //  For Pump attendants
+      if (employee._id === selected) {
+        return (
+          <option key={employee._id} value={employee._id} selected>
+            {employee.fName + ' ' + employee.mInit + ' ' + employee.lName}
+          </option>
+        )
+      } else {
+        return (
+          <option key={employee._id} value={employee._id}>
+            {employee.fName + ' ' + employee.mInit + ' ' + employee.lName}
+          </option>
+        )
+      }
+    })
 
-  if (props.employees.error)
+  // if value is undefined
+
+  // if value is defined (after just adding)
+
+  const button = (addBtn) => {
+    let sign = '-'
+    let color = 'btn-danger'
+
+    if (addBtn) {
+      sign = '+'
+      color = 'btn-success'
+    }
     return (
-      <Redirect
-        to={{
-          pathname: '/error-page',
-          state: {
-            status: props.employees.error.status,
-            data: props.employees.error.data,
-          },
-        }}
-      />
+      <button type='button' class={'btn ' + color} onClick={props.clickHandler}>
+        {sign}
+      </button>
     )
-  else if (props.employees.loading || !props.employees.results)
-    return (
-      <div class='spinner-border text-primary' role='status'>
-        <span class='sr-only'>Loading...</span>
-      </div>
-    )
-  else {
-    const employeesList = props.employees.results.map((employee) => (
-      <option key={employee._id} value={employee._id}>
-        {employee.fName+' '+employee.mInit+' '+employee.lName}
-      </option>
-    ))
+  }
+
+  const handleChange = (e) => {
+    console.log(e.target.value)
+    props.updatePumpAttendantOnForm(e.target.id, e.target.value)
+  }
+
+  if (props.isCashier) {
     return (
       <div className='input-group mb-3'>
         <div className='input-group-prepend'>
-          <label className='input-group-text' htmlFor={props.name}>
+          <label className='input-group-text' htmlFor={props.id}>
             {props.name}
           </label>
         </div>
         <Field
-          component='select'
+        component='select'
           className='custom-select'
-          id={props.name}
-          name={props.name}
+          id={props.id}
+          name={props.name + '-' + props.id}
         >
           <option value='DEFAULT'>Choose...</option>
-          {employeesList}
+          {employeesList(props.employees)}
         </Field>
       </div>
     )
+  } else
+    return (
+      <div className='input-group mb-3'>
+        <div className='input-group-prepend'>
+          <label className='input-group-text' htmlFor={props.id}>
+            {props.name}
+          </label>
+        </div>
+        <select
+          onChange={props.updateSelected}
+          className='custom-select'
+          id={props.id}
+          name={props.name + '-' + props.id}
+        >
+          <option value='DEFAULT'>Choose...</option>
+          {employeesList(props.employees, props.selected)}
+        </select>
+        {button(props.addButton, props.handleClick)}
+      </div>
+    )
+}
+const mapDispatchToProps = (dispatch, ownProps) => {
+  if (ownProps.addButton) {
+    return {
+      updateSelected: (e) =>
+        dispatch(updatePumpAttendantOnForm(e.target.id, e.target.value)),
+      clickHandler: () => dispatch(addPumpAttendantOnForm(nextId())),
+    }
+  } else {
+    return {
+      updateSelected: (e) =>
+        dispatch(updatePumpAttendantOnForm(e.target.id, e.target.value)),
+      clickHandler: () => dispatch(removePumpAttendantOnForm(ownProps.id)),
+    }
   }
 }
-
-const mapStateToProps = (state) => {
-  return {
-    employees: state.employees,
-  }
-}
-
-export default connect(mapStateToProps, { fetchEmployees })(EmployeeChooser)
+export default connect(null, mapDispatchToProps)(EmployeeChooser)

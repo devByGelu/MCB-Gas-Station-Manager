@@ -8,9 +8,9 @@ export const PriceTableRow = (props) => {
         <th scope='row'>{props.productName}</th>
         <td>
           <div className='input-group mb-3'>
-            <div className='input-group-prepend'>
+            {/* <div className='input-group-prepend'>
               <span className='input-group-text'>PHP</span>
-            </div>
+            </div> */}
             <Field
               component='input'
               name={'pump-1-2-' + props.productName}
@@ -25,9 +25,9 @@ export const PriceTableRow = (props) => {
         </td>
         <td>
           <div className='input-group mb-3'>
-            <div className='input-group-prepend'>
+            {/* <div className='input-group-prepend'>
               <span className='input-group-text'>PHP</span>
-            </div>
+            </div> */}
             <Field
               component='input'
               name={'pump-3-4-' + props.productName}

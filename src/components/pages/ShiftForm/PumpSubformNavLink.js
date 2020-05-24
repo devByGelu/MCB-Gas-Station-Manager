@@ -10,10 +10,9 @@ import {
 export const PumpSubformNavLink = (props) => {
 
   if (props.isClickAble) {
-    const buttonState = props.activeNavLink === props.label ? 'btn btn-outline-primary mr-2 active':'btn btn-outline-primary mr-2'
-    
+    const buttonState = props.activeNavLink === props.label ? 'btn btn-outline-warning mr-1 mb-1 active':'btn btn-outline-warning mr-1 mb-1'
     return (
-      <li class='nav-item active'>
+      <li class='nav-item'>
         <button
           type='button'
           class={buttonState}

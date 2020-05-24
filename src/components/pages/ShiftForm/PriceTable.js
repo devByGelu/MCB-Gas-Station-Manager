@@ -4,7 +4,6 @@ import PriceTableRow from './PriceTableRow'
 export const PriceTable = () => {
   return (
     <React.Fragment>
-      <h1>Price</h1>
       <table className='table'>
         <thead>
           <tr>
