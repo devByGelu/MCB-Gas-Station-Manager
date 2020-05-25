@@ -9,6 +9,7 @@ import MainFormNav from './pages/ShiftForm/MainForm/MainFormNav'
 import AdvanceReadingForm from './pages/ShiftForm/AdvanceReadingForm/AdvanceReadingForm'
 import { DipstickReadingForm } from './pages/ShiftForm/DipstickReadingForm/DipstickReadingForm'
 import DropForm from './pages/ShiftForm/DropForm/DropForm'
+import ExpensesForm from './pages/ShiftForm/ExpensesForm/ExpensesForm'
 
 const App = () => {
   return (
@@ -20,7 +21,13 @@ const App = () => {
           path='/addreport/new'
           render={(props) => (
             <MainFormNav
-              items={[<Form />, <AdvanceReadingForm />, <DipstickReadingForm/>,<DropForm/>]}
+              items={[
+                <Form />,
+                <AdvanceReadingForm />,
+                <DipstickReadingForm />,
+                <DropForm />,
+                <ExpensesForm />,
+              ]}
               labels={[
                 'ShiftForm',
                 'Advance Reading',

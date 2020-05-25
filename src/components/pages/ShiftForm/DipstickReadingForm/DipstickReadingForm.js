@@ -4,7 +4,7 @@ import Table from '../../../shared/Table/Table'
 import { reduxForm } from 'redux-form'
 export const DipstickReadingForm = () => {
   const renderFieldFormat = (type, name, step) => (
-    <RenderField type={type} name={name} step={step} />
+    <RenderField type={type} name={name} step={step} multipleInputs={true}/>
   )
   return (
     <>

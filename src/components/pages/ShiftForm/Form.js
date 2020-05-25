@@ -10,6 +10,7 @@ import EmployeeChooser from './EmployeeChooser'
 import PumpSubform from './PumpSubform'
 import { fetchEmployees } from '../../../actions/index'
 import PumpAttendants from './PumpAttendants'
+import FormHeader from '../../shared/FormHeader/FormHeader'
 
 const onSubmit = async (values) => {
   try {
@@ -63,7 +64,7 @@ export const Form = (props) => {
           <form onSubmit={props.handleSubmit}>
             <div className='form-row'>
               <div className='col-md'>
-                <div class='p-3 mb-2 bg-secondary text-white'>Attendance</div>
+                <FormHeader text = {'Attendance'}/>
               </div>
             </div>
 
@@ -84,11 +85,11 @@ export const Form = (props) => {
                 />
               </div>
             </div>
-            <div class='p-3 mb-2 bg-secondary text-white'>Price</div>
+<FormHeader text='Price'/>
             <div className='form-row'>
               <PriceTable />
             </div>
-            <div class='p-3 mb-2 bg-secondary text-white'>Liters</div>
+            <FormHeader text='Liters'/>
 
             <div className='form-row'>
               <div className='col-md'>

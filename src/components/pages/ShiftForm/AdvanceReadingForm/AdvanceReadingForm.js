@@ -1,11 +1,13 @@
 import React from 'react'
 import RenderField from './RenderField'
 import { Field, reduxForm } from 'redux-form'
+import FormHeader from '../../../shared/FormHeader/FormHeader'
 
 const AdvanceReadingForm = () => {
   return (
     <React.Fragment>
-      <div class='p-3 mb-2 bg-secondary text-white'>Advance Reading</div>
+      
+<FormHeader text='Advance Reading'/>
       <RenderField
         type={'number'}
         name={'Pump-1-AR'}
