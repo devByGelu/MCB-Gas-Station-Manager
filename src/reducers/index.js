@@ -8,6 +8,7 @@ import pump4ActiveNavLinkReducer from './pump4ActiveNavLinkReducer'
 import employeesReducer from './employeesReducer'
 import shiftFormPumpAttendantsReducer from './shiftFormPumpAttendantsReducer'
 import registeredMainFormNavLinksReducer from './registeredMainFormNavLinksReducer'
+import pumpTabsReducer from './pumpTabsReducer'
 
 export default combineReducers({
   shiftFormDate: shiftFormDateReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
   employees: employeesReducer,
   shiftFormPumpAttendants: shiftFormPumpAttendantsReducer,
   form: formReducer,
-  registeredMainFormNavLinks:registeredMainFormNavLinksReducer
+  registeredMainFormNavLinks:registeredMainFormNavLinksReducer,
+  pumpTabs: pumpTabsReducer
 })

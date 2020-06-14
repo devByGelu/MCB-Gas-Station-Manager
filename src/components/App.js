@@ -7,9 +7,14 @@ import Form from './pages/ShiftForm/Form'
 import ErrorPage from './shared/ErrorPage/ErrorPage'
 import MainFormNav from './pages/ShiftForm/MainForm/MainFormNav'
 import AdvanceReadingForm from './pages/ShiftForm/AdvanceReadingForm/AdvanceReadingForm'
-import { DipstickReadingForm } from './pages/ShiftForm/DipstickReadingForm/DipstickReadingForm'
+import DipstickReadingForm  from './pages/ShiftForm/DipstickReadingForm/DipstickReadingForm'
 import DropForm from './pages/ShiftForm/DropForm/DropForm'
 import ExpensesForm from './pages/ShiftForm/ExpensesForm/ExpensesForm'
+import submitGroup2 from './shared/submitGroup2'
+import submitGroup1 from './shared/submitGroup1'
+import submitGroup3 from './shared/submitGroup3'
+import submitGroup4 from './shared/submitGroup4'
+import submitGroup5 from './shared/submitGroup5'
 
 const App = () => {
   return (
@@ -22,18 +27,18 @@ const App = () => {
           render={(props) => (
             <MainFormNav
               items={[
-                <Form />,
-                <AdvanceReadingForm />,
-                <DipstickReadingForm />,
-                <DropForm />,
-                <ExpensesForm />,
+                <Form onSubmit={submitGroup1}/>,
+                <AdvanceReadingForm  onSubmit={submitGroup2}/>,
+                <DipstickReadingForm onSubmit={submitGroup3}/>,
+                <DropForm onSubmit={submitGroup4}/>,
+                <ExpensesForm onSubmit={submitGroup5}/>,
               ]}
               labels={[
                 'ShiftForm',
                 'Advance Reading',
                 'Dipstick Reading',
                 'Drop Form',
-                'Expenses',
+                'Withdrawals',
               ]}
               {...props}
             />

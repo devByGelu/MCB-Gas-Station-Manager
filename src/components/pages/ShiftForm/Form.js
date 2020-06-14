@@ -1,31 +1,74 @@
 import React, { useEffect, useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
-import nextId from 'react-id-generator'
+import {
+  Field,
+  reduxForm,
+  FieldArray,
+  hasSubmitFailed,
+  getFormSyncErrors,
+} from 'redux-form'
 import { Redirect } from 'react-router-dom'
-
-import ReportsAPI from '../../../apis/ReportsAPI'
-import PriceTable from './PriceTable'
-import EmployeeChooser from './EmployeeChooser'
+import Grid from '@material-ui/core/Grid'
+import renderField from '../../shared/renderField'
 import PumpSubform from './PumpSubform'
 import { fetchEmployees } from '../../../actions/index'
-import PumpAttendants from './PumpAttendants'
 import FormHeader from '../../shared/FormHeader/FormHeader'
+import validate from '../../shared/validate'
+import RenderErrors from '../../shared/RenderErrors'
+import renderSelectField from '../../shared/renderSelectField'
+import SelectOptionsMapper from '../../shared/SelectOptionsMapper'
+import renderFieldArray from '../../shared/renderFieldArray'
 
-const onSubmit = async (values) => {
-  try {
-    console.log(values)
-    alert(JSON.stringify(values))
-  } catch (error) {
-    console.log(error.response)
-  }
-  // setLoading()
-}
+import { withStyles } from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
+import PumpTab from '../../shared/PumpTab'
 export const Form = (props) => {
+  const pumps = [{label:'PUMP 1',number:'1'}, {label:'PUMP 2',number:'2'}, {label:'PUMP 3',number:'3'}, {label:'PUMP 4',number:'4'}]
+  function a11yProps(index) {
+    return {
+      id: `vertical-tab-${index}`,
+      'aria-controls': `vertical-tabpanel-${index}`,
+    }
+  }
+  const {
+    error,
+    handleSubmit,
+    pristine,
+    reset,
+    submitting,
+    formSyncErrors,
+    submitFailed,
+  } = props
   useEffect(() => {
-    if (props.employees.results === null) props.fetchEmployees()
+    if (props.employees === undefined || props.employees.results === null)
+      props.fetchEmployees()
   }, [])
 
+  const renderEmployeesErrors = () => {
+    if (submitFailed && formSyncErrors.Cashier)
+      return (
+        <RenderErrors
+          errors={[submitFailed && formSyncErrors.Cashier]}
+          errorMessages={[JSON.stringify(formSyncErrors.Cashier._error)]}
+        />
+      )
+    else if (submitFailed && formSyncErrors.pumpAttendants)
+      return (
+        <RenderErrors
+          errors={[submitFailed && formSyncErrors.pumpAttendants]}
+          errorMessages={[JSON.stringify(formSyncErrors.pumpAttendants._error)]}
+        />
+      )
+    else return <></>
+  }
   const isActiveInPump1 = (productName) => {
     return productName === props.pump1ActiveNavLink ? '' : 'd-none'
   }
@@ -39,7 +82,17 @@ export const Form = (props) => {
     return productName === props.pump4ActiveNavLink ? '' : 'd-none'
   }
 
-  if (props.employees.error) {
+  if (
+    props.employees === undefined ||
+    props.employees.results === null ||
+    props.employees.loading
+  ) {
+    return (
+      <div class='spinner-border text-primary' role='status'>
+        <span class='sr-only'>Loading...</span>
+      </div>
+    )
+  } else if (props.employees.error) {
     return (
       <Redirect
         to={{
@@ -51,47 +104,82 @@ export const Form = (props) => {
         }}
       />
     )
-  } else if (props.employees.results === null || props.employees.loading) {
-    return (
-      <div class='spinner-border text-primary' role='status'>
-        <span class='sr-only'>Loading...</span>
-      </div>
-    )
   } else
     return (
       <React.Fragment>
-        <div className='container'>
-          <form onSubmit={props.handleSubmit}>
+        <form onSubmit={handleSubmit}>
+          <div className='container'>
             <div className='form-row'>
               <div className='col-md'>
-                <FormHeader text = {'Attendance'}/>
+                <FormHeader text={'Attendance'} />
               </div>
             </div>
-
             <div className='form-row'>
               <div className='col-md'>
-                <EmployeeChooser
-                  employees={props.employees.results}
-                  key={69}
-                  isCashier={true}
+                <Field
                   name='Cashier'
-                  id={69}
-                />
+                  label='Cashier'
+                  id='Cashier'
+                  component={renderSelectField}>
+                  <SelectOptionsMapper
+                    items={props.employees.results.map(
+                      (employee) => employee.eFN + ' ' + employee.eLN
+                    )}
+                    values={props.employees.results.map(
+                      (employee) => employee.eId
+                    )}
+                  />
+                </Field>
               </div>
               <div className='col-md'>
-                <PumpAttendants
-                  employees={props.employees.results}
-                  activePumpAttendants={props.shiftFormPumpAttendants}
+                <FieldArray
+                  name='pumpAttendants'
+                  component={renderFieldArray}
+                  items={props.employees.results.map(
+                    (employee) => employee.eFN + ' ' + employee.eLN
+                  )}
+                  values={props.employees.results.map(
+                    (employee) => employee.eId
+                  )}
+                  type='pumpAttendants'
                 />
               </div>
             </div>
-<FormHeader text='Price'/>
+            {renderEmployeesErrors()}
+            <FormHeader text='Price' />
             <div className='form-row'>
-              <PriceTable />
-            </div>
-            <FormHeader text='Liters'/>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align='right'></TableCell>
+                    <TableCell align='right'>Diesel</TableCell>
+                    <TableCell align='right'>Accelrate</TableCell>
+                    <TableCell align='right'>Jx Premium</TableCell>
+                  </TableRow>
+                </TableHead>
 
-            <div className='form-row'>
+                <TableBody>
+                  <FieldArray
+                    name='pumpPrices'
+                    component={renderFieldArray}
+                    type='pumpPrices'
+                  />
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+          <FormHeader text='Liters' />
+          <div className='form-row'>
+            <Grid container spacing={3} alignItems='center' justify='center'>
+              {pumps.map((pump) => (
+                <Grid item md={6}>
+                  <Paper>
+                    <PumpTab pumpTabLabel={pump.label} pumpNum={pump.number}/>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+            <div className='d-none'>
               <div className='col-md'>
                 <PumpSubform pumpNumber='1' isActive={isActiveInPump1} />
               </div>
@@ -107,11 +195,9 @@ export const Form = (props) => {
                 <PumpSubform pumpNumber='4' isActive={isActiveInPump4} />
               </div>
             </div>
-            <button type='submit' name='asd'>
-              Try me
-            </button>
-          </form>
-        </div>
+          </div>
+          <button type='submit'>submit!!!</button>
+        </form>
       </React.Fragment>
     )
 }
@@ -122,16 +208,26 @@ const mapStateToProps = (state) => {
     pump2ActiveNavLink: state.pump2ActiveNavLink.product,
     pump3ActiveNavLink: state.pump3ActiveNavLink.product,
     pump4ActiveNavLink: state.pump4ActiveNavLink.product,
-    shiftFormPumpAttendants: state.shiftFormPumpAttendants,
+    submitFailed: hasSubmitFailed('shiftForm')(state),
+    formSyncErrors: getFormSyncErrors('shiftForm')(state),
     employees: state.employees,
   }
 }
+// Returns appropriate submit handler
 
 export default connect(mapStateToProps, { fetchEmployees })(
   reduxForm({
     form: 'shiftForm',
+    initialValues: {
+      Cashier: 2,
+      pumpAttendants: [{ PA: 1 }],
+      pumpPrices: [
+        { diesel: '', accelrate: '', jxpremium: '' },
+        { diesel: '', accelrate: '', jxpremium: '' },
+      ],
+    },
     forceUnregisterOnUnmount: true,
     destroyOnUnmount: false,
-    onSubmit: onSubmit,
+    validate,
   })(Form)
 )

@@ -8,7 +8,7 @@ function PumpInput(props) {
       <div class='input-group-prepend'>
         <span
           class='input-group-text'
-          id={('pump-'+ props.pumpNumber+ '-'+ props.label+'-'+props.product)}
+          id={'pump' + props.pumpNumber + props.label + props.product}
         >
           {props.label}
         </span>
@@ -16,12 +16,14 @@ function PumpInput(props) {
       <Field
         component='input'
         type='number'
-        name={('pump-'+ props.pumpNumber+ '-'+ props.label+'-'+props.product)}
-        id={('pump-'+ props.pumpNumber+ '-'+ props.label+'-'+props.product)}
+        name={'pump' + props.pumpNumber + props.label + props.product}
+        id={'pump' + props.pumpNumber + '-' + props.label + '-' + props.product}
         class='form-control'
-        placeholder={('pump-'+ props.pumpNumber+ '-'+ props.label+'-'+props.product)}
-        aria-label={('pump-'+ props.pumpNumber+ '-'+ props.label+'-'+props.product)}
-        aria-describedby={('pump-'+ props.pumpNumber+ '-'+ props.label+'-'+props.product)}
+        placeholder={'pump' + props.pumpNumber + props.label + props.product}
+        aria-label={'pump' + props.pumpNumber + props.label + props.product}
+        aria-describedby={
+          'pump' + props.pumpNumber + props.label + props.product
+        }
       />
     </div>
   )

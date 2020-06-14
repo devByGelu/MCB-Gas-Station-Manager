@@ -8,6 +8,8 @@ import { removePumpAttendantOnForm } from '../../../actions/index'
 import { addPumpAttendantOnForm } from '../../../actions/index'
 
 const EmployeeChooser = (props) => {
+  
+  const required = value => (value==='DEAFULT' ? 'Required!':undefined)
   const employeesList = (employees, selected) =>
     employees.map((employee) => {
       if (!selected)
@@ -66,15 +68,17 @@ const EmployeeChooser = (props) => {
           </label>
         </div>
         <Field
-        component='select'
+          validate={[required]}
+          component='select'
           className='custom-select'
           id={props.id}
-          name={props.name + '-' + props.id}
+          name={props.name}
         >
           <option value='DEFAULT'>Choose...</option>
           {employeesList(props.employees)}
         </Field>
       </div>
+
     )
   } else
     return (

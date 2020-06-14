@@ -2,11 +2,27 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { registerMainFormNavLinks } from '../../../../actions/index'
 import { toggleMainFormNavLink } from '../../../../actions/index'
+// import submit from '../../../shared/submit'
+import { reduxForm } from 'redux-form'
+// import RemoteSubmitButton from '../../../shared/RemoteSubmitButton'
+import validate from '../../../shared/validate'
+import submitGroup1 from '../../../shared/submitGroup1'
+import Submitgroup1Btn from '../../../shared/Submitgroup1Btn'
+import submitGroup2 from '../../../shared/submitGroup2'
+import submit from '../../../shared/submit'
+import store from '../../../../store'
+import { Form } from '../Form'
+import AdvanceReadingForm from '../AdvanceReadingForm/AdvanceReadingForm'
+import { DipstickReadingForm } from '../DipstickReadingForm/DipstickReadingForm'
+import DropForm from '../DropForm/DropForm'
+import ExpensesForm from '../ExpensesForm/ExpensesForm'
+
 export const MainFormNav = (props) => {
+
   useEffect(() => {
     props.registerMainFormNavLinks(props.labels)
   }, [])
-
+  const { onSubmit } = props
   const navItems = () =>
     props.registeredMainFormNavLinks.map((link) => {
       let isActive = link.isActive
@@ -18,8 +34,7 @@ export const MainFormNav = (props) => {
             name={link.label}
             type='button'
             class={isActive}
-            onClick={props.clickHandler}
-          >
+            onClick={props.clickHandler}>
             {link.label}
           </button>
         </li>
@@ -32,18 +47,11 @@ export const MainFormNav = (props) => {
     )
       return props.items[0]
     else {
-      console.log(props.registeredMainFormNavLinks)
-      const activeMainFormNavLink = props.registeredMainFormNavLinks.find(
+
+      let componentIndex = props.registeredMainFormNavLinks.findIndex(
         (link) => link.isActive === true
       )
-      let componentIndex = props.labels.findIndex(
-        (label) => activeMainFormNavLink.label === label
-      )
-      /* return props.items.map((component, index) => {
-        const isHidden = componentIndex === index ? '' : 'd-none'
-        return <div className={isHidden}>{component}</div>
-      }) */
-      console.log(props.items[componentIndex])
+
       return props.items[componentIndex]
     }
   }
@@ -54,7 +62,11 @@ export const MainFormNav = (props) => {
           <ul class='nav nav-pills card-header-pills'>{navItems()}</ul>
         </div>
 
-        <div class='card-body'>{activeForm()}</div>
+        <div class='card-body'>
+          {activeForm()}
+          {/* <RemoteSubmitButton/> */}
+          {/* <Submitgroup1Btn /> */}
+        </div>
       </div>
     </div>
   )
@@ -71,4 +83,13 @@ const mapDispatchToProps = (dispatch) => {
     clickHandler: (e) => dispatch(toggleMainFormNavLink(e.target.name)),
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(MainFormNav)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  reduxForm({
+    form: 'shiftForm', // a unique identifier for this form
+    // validate,
+  })(MainFormNav)
+)
