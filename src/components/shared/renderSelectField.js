@@ -17,7 +17,7 @@ const renderFromHelper = ({ touched, error }) => {
     return <FormHelperText>{touched && error}</FormHelperText>
   }
 }
-const iconBtn = (fields,index) => {
+const iconBtn = (fields, index) => {
   return fields ? (
     <InputAdornment position='start'>
       <FieldBtn type='add' fields={fields} index={index} />
@@ -37,12 +37,18 @@ const renderSelectField = ({
   children,
 }) => (
   <>
-    <FormControl error={touched && error} fullWidth='true'>
+    <FormControl size='small' error={touched && error}>
       <InputLabel htmlFor={id}>{label}</InputLabel>
-      <Select native {...input} startAdornment={iconBtn(fields,index)}>
+      <Select
+        native
+        {...input}
+        // variant='outlined'
+        fullWidth={true}
+         
+        startAdornment={iconBtn(fields, index)}>
         {children}
       </Select>
-      {renderFromHelper({ touched, error })}
+      {/* {renderFromHelper({ touched, error })} */}
     </FormControl>
   </>
 )

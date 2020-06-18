@@ -78,8 +78,8 @@ export const toggleMainFormNavLink = (label) => ({
   payload: label,
 })
 
-export const changeActivePumpTab = (pumpNumIndex, active) => ({
-  type: 'CHANGE_ACTIVE_PUMP_TAB',
+export const changeActivePanel = (pumpNumIndex, active) => ({
+  type: 'CHANGE_ACTIVE_PANEL',
   payload: {
     pumpNumIndex,
     active,

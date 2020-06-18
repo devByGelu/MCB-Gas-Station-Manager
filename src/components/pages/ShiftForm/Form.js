@@ -9,13 +9,13 @@ import {
   getFormSyncErrors,
 } from 'redux-form'
 import { Redirect } from 'react-router-dom'
+
 import Grid from '@material-ui/core/Grid'
 import renderField from '../../shared/renderField'
-import PumpSubform from './PumpSubform'
-import { fetchEmployees } from '../../../actions/index'
+// import { fetchEmployees } from '../../../actions/index'
+
 import FormHeader from '../../shared/FormHeader/FormHeader'
 import validate from '../../shared/validate'
-import RenderErrors from '../../shared/RenderErrors'
 import renderSelectField from '../../shared/renderSelectField'
 import SelectOptionsMapper from '../../shared/SelectOptionsMapper'
 import renderFieldArray from '../../shared/renderFieldArray'
@@ -30,8 +30,21 @@ import Paper from '@material-ui/core/Paper'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import PumpTab from '../../shared/PumpTab'
+import FormCard from '../../shared/FormCard'
+import { fetchEmployees } from '../../../actions'
+const useStyles = makeStyles({
+  table: {
+    maxWidth: 500,
+  },
+})
 export const Form = (props) => {
-  const pumps = [{label:'PUMP 1',number:'1'}, {label:'PUMP 2',number:'2'}, {label:'PUMP 3',number:'3'}, {label:'PUMP 4',number:'4'}]
+  const classes = useStyles()
+  const pumps = [
+    { label: 'PUMP 1', number: '1' },
+    { label: 'PUMP 2', number: '2' },
+    { label: 'PUMP 3', number: '3' },
+    { label: 'PUMP 4', number: '4' },
+  ]
   function a11yProps(index) {
     return {
       id: `vertical-tab-${index}`,
@@ -52,35 +65,7 @@ export const Form = (props) => {
       props.fetchEmployees()
   }, [])
 
-  const renderEmployeesErrors = () => {
-    if (submitFailed && formSyncErrors.Cashier)
-      return (
-        <RenderErrors
-          errors={[submitFailed && formSyncErrors.Cashier]}
-          errorMessages={[JSON.stringify(formSyncErrors.Cashier._error)]}
-        />
-      )
-    else if (submitFailed && formSyncErrors.pumpAttendants)
-      return (
-        <RenderErrors
-          errors={[submitFailed && formSyncErrors.pumpAttendants]}
-          errorMessages={[JSON.stringify(formSyncErrors.pumpAttendants._error)]}
-        />
-      )
-    else return <></>
-  }
-  const isActiveInPump1 = (productName) => {
-    return productName === props.pump1ActiveNavLink ? '' : 'd-none'
-  }
-  const isActiveInPump2 = (productName) => {
-    return productName === props.pump2ActiveNavLink ? '' : 'd-none'
-  }
-  const isActiveInPump3 = (productName) => {
-    return productName === props.pump3ActiveNavLink ? '' : 'd-none'
-  }
-  const isActiveInPump4 = (productName) => {
-    return productName === props.pump4ActiveNavLink ? '' : 'd-none'
-  }
+
 
   if (
     props.employees === undefined ||
@@ -108,94 +93,104 @@ export const Form = (props) => {
     return (
       <React.Fragment>
         <form onSubmit={handleSubmit}>
-          <div className='container'>
-            <div className='form-row'>
-              <div className='col-md'>
-                <FormHeader text={'Attendance'} />
-              </div>
-            </div>
-            <div className='form-row'>
-              <div className='col-md'>
-                <Field
-                  name='Cashier'
-                  label='Cashier'
-                  id='Cashier'
-                  component={renderSelectField}>
-                  <SelectOptionsMapper
-                    items={props.employees.results.map(
-                      (employee) => employee.eFN + ' ' + employee.eLN
-                    )}
-                    values={props.employees.results.map(
-                      (employee) => employee.eId
-                    )}
-                  />
-                </Field>
-              </div>
-              <div className='col-md'>
-                <FieldArray
-                  name='pumpAttendants'
-                  component={renderFieldArray}
-                  items={props.employees.results.map(
-                    (employee) => employee.eFN + ' ' + employee.eLN
-                  )}
-                  values={props.employees.results.map(
-                    (employee) => employee.eId
-                  )}
-                  type='pumpAttendants'
-                />
-              </div>
-            </div>
-            {renderEmployeesErrors()}
-            <FormHeader text='Price' />
-            <div className='form-row'>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell align='right'></TableCell>
-                    <TableCell align='right'>Diesel</TableCell>
-                    <TableCell align='right'>Accelrate</TableCell>
-                    <TableCell align='right'>Jx Premium</TableCell>
-                  </TableRow>
-                </TableHead>
+          <Grid container direction='row' spacing={2} justify='center'>
+            <Grid item md={8}>
+              <FormCard title='Prices'>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align='left'></TableCell>
+                      <TableCell align='left'>Diesel(PHP)</TableCell>
+                      <TableCell align='left'>Accelrate(PHP)</TableCell>
+                      <TableCell align='left'>Jx Premium(PHP)</TableCell>
+                    </TableRow>
+                  </TableHead>
 
-                <TableBody>
-                  <FieldArray
-                    name='pumpPrices'
-                    component={renderFieldArray}
-                    type='pumpPrices'
-                  />
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-          <FormHeader text='Liters' />
-          <div className='form-row'>
-            <Grid container spacing={3} alignItems='center' justify='center'>
-              {pumps.map((pump) => (
-                <Grid item md={6}>
-                  <Paper>
-                    <PumpTab pumpTabLabel={pump.label} pumpNum={pump.number}/>
-                  </Paper>
-                </Grid>
-              ))}
+                  <TableBody>
+                    <FieldArray
+                      name='pumpPrices'
+                      component={renderFieldArray}
+                      type='pumpPrices'
+                    />
+                  </TableBody>
+                </Table>
+              </FormCard>
             </Grid>
-            <div className='d-none'>
-              <div className='col-md'>
-                <PumpSubform pumpNumber='1' isActive={isActiveInPump1} />
-              </div>
-              <div className='col-md'>
-                <PumpSubform pumpNumber='2' isActive={isActiveInPump2} />
-              </div>
-            </div>
-            <div className='form-row'>
-              <div className='col-md'>
-                <PumpSubform pumpNumber='3' isActive={isActiveInPump3} />
-              </div>
-              <div className='col-md'>
-                <PumpSubform pumpNumber='4' isActive={isActiveInPump4} />
-              </div>
-            </div>
-          </div>
+            <Grid item md={4}>
+              <Grid container item direction='row' spacing={2} justify='center'>
+                <Grid container item direction='row' justify='center'>
+                  <FormCard title='Cashier'>
+                    <Grid item md={12}>
+                      <Field
+                        name='Cashier'
+                        // label='Cashier'
+                        id='Cashier'
+                        component={renderSelectField}>
+                        <SelectOptionsMapper
+                          items={props.employees.results.map(
+                            (employee) => employee.eFN + ' ' + employee.eLN
+                          )}
+                          values={props.employees.results.map(
+                            (employee) => employee.eId
+                          )}
+                        />
+                      </Field>
+                    </Grid>
+                  </FormCard>
+                </Grid>
+
+                <Grid item md={12}>
+                  <Grid item container direction='row' justify='center'>
+                    <FormCard title='Pump Attendants'>
+                      <FieldArray
+                        name='pumpAttendants'
+                        component={renderFieldArray}
+                        items={props.employees.results.map(
+                          (employee) => employee.eFN + ' ' + employee.eLN
+                        )}
+                        values={props.employees.results.map(
+                          (employee) => employee.eId
+                        )}
+                        type='pumpAttendants'
+                      />
+                    </FormCard>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item md={12}>
+              <FormCard title='Pump Summary'>
+                <Grid item container direction='row'>
+                  <Grid item md={6}>
+                    <PumpTab
+                      pumpTabLabel={pumps[0].label}
+                      pumpNum={pumps[0].number}
+                    />
+                  </Grid>
+                  <Grid item md={6}>
+                    <PumpTab
+                      pumpTabLabel={pumps[1].label}
+                      pumpNum={pumps[1].number}
+                    />
+                  </Grid>
+                  <Grid item md={6}>
+                    <PumpTab
+                      pumpTabLabel={pumps[2].label}
+                      pumpNum={pumps[2].number}
+                    />
+                  </Grid>
+                  <Grid item md={6}>
+                    <PumpTab
+                      pumpTabLabel={pumps[3].label}
+                      pumpNum={pumps[3].number}
+                    />
+                  </Grid>
+                </Grid>
+              </FormCard>
+            </Grid>
+          </Grid>
+
           <button type='submit'>submit!!!</button>
         </form>
       </React.Fragment>
@@ -204,10 +199,6 @@ export const Form = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    pump1ActiveNavLink: state.pump1ActiveNavLink.product,
-    pump2ActiveNavLink: state.pump2ActiveNavLink.product,
-    pump3ActiveNavLink: state.pump3ActiveNavLink.product,
-    pump4ActiveNavLink: state.pump4ActiveNavLink.product,
     submitFailed: hasSubmitFailed('shiftForm')(state),
     formSyncErrors: getFormSyncErrors('shiftForm')(state),
     employees: state.employees,
@@ -222,9 +213,15 @@ export default connect(mapStateToProps, { fetchEmployees })(
       Cashier: 2,
       pumpAttendants: [{ PA: 1 }],
       pumpPrices: [
-        { diesel: '', accelrate: '', jxpremium: '' },
-        { diesel: '', accelrate: '', jxpremium: '' },
+        {},
+        {},
       ],
+      advanceReading: [{}, {}, {}, {}],
+      dipstick: [{}, {}, {}],
+      lastDropBreakdown: [{denomination:1000,quantity:0}],
+      expenses: [{}],
+      creditsales: [{}],
+      cashadvance: [{}],
     },
     forceUnregisterOnUnmount: true,
     destroyOnUnmount: false,

@@ -4,11 +4,15 @@ import { makeStyles } from '@material-ui/core/styles'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
-
+import { connect } from 'react-redux'
+import { changeActivePanel } from '../../actions/index'
+import PanelFields from '../pages/ShiftForm/PanelFields'
+import { Field, FieldArray } from 'redux-form'
+import renderTextField from './renderTextField'
 function TabPanel(props) {
   const { children, value, index, ...other } = props
-
   return (
     <div
       role='tabpanel'
@@ -40,71 +44,88 @@ function a11yProps(index) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    marginTop: 3,
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
-    height: 151,
+    height: 180,
   },
   tabs: {
+    marginTop: 28,
     borderRight: `1px solid ${theme.palette.divider}`,
   },
   label: {
     paddingLeft: 7,
     marginBottom: 20,
   },
-  test: {
-    textAlign: 'right',
-    marginLeft: 20,
+  gridItem: {
+    marginBottom: 13,
   },
 }))
 
-  function PumpTab({ pumpTabLabel, pumpNum }) {
+function PumpTab(props) {
+  const { pumpTabLabel, pumpNum, activePanel, changeActivePanel } = props
   const classes = useStyles()
-  const [value, setValue] = React.useState(0)
-
+  const labels = ['Diesel', 'Accelrate', 'JxPremium']
   const handleChange = (event, newValue) => {
-    console.log(event.target)
-    console.log(newValue)
-    setValue(newValue)
+    changeActivePanel(pumpNum - 1, newValue)
   }
-
+  const prefixes = ['END', 'CAL', 'MGN']
+  const products = ['Diesel', 'Accelrate', 'JxPremium']
   return (
-    <>
-      <Typography variant='overline' gutterBottom className={classes.test}>
-        {pumpTabLabel}
-      </Typography>
-
+    <Grid item container md>
       <div className={classes.root}>
-        <Tabs
-          orientation='vertical'
-          variant='scrollable'
-          value={value}
-          onChange={handleChange}
-          aria-label='Vertical tabs example'
-          className={classes.tabs}>
-          <Tab label='Diesel' {...a11yProps(0)} />
-          <Tab label='Accelrate' {...a11yProps(1)} />
-          <Tab label='Jx Premium' {...a11yProps(2)} />
-        </Tabs>
-        <TabPanel value={value} index={0}>
-          Item One
-          <FieldArray
-            component={renderSubFormFields}
-            product={label}
-            name={'pump' + pumpNum + 'Liters'}
-          />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          Item Two
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          Item Three
-        </TabPanel>
+        <Grid item>
+          <Tabs
+            orientation='vertical'
+            variant='scrollable'
+            value={activePanel}
+            onChange={handleChange}
+            aria-label='Vertical tabs example'
+            className={classes.tabs}>
+            <Tab label='Diesel' {...a11yProps(0)} />
+            <Tab label='Accelrate' {...a11yProps(1)} />
+            <Tab label='Jx Premium' {...a11yProps(2)} />
+          </Tabs>
+        </Grid>
+        {/* Right */}
+
+        <Grid item>
+          {products.map((product, index) => (
+            <Grid item container direction='column'>
+              <TabPanel
+                value={activePanel}
+                index={index}
+                className={classes.tabpanel}>
+                <>
+                  {prefixes.map((prefix) => (
+                    <Grid item className={classes.gridItem}>
+                      <Field
+                        name={`pump${pumpNum}${product}${prefix}`}
+                        component={renderTextField}
+                        label={prefix}
+                      />
+                    </Grid>
+                  ))}
+                </>
+              </TabPanel>
+            </Grid>
+          ))}
+        </Grid>
+        {/* <Typography variant='overline'>{pumpTabLabel}</Typography> */}
       </div>
-    </>
+    </Grid>
   )
 }
-const mapStateToProps = (state,ownProps) => {
-  
+const mapStateToProps = (state, ownProps) => {
+  return {
+    activePanel: state.pumpTabs[ownProps.pumpNum - 1].active,
+  }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(PumpTab)
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    changeActivePanel: (pumpNumIndex, active) =>
+      dispatch(changeActivePanel(pumpNumIndex, active)),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(PumpTab)

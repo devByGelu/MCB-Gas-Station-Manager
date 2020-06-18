@@ -2,87 +2,96 @@ import React from 'react'
 import { Field, FieldArray, reduxForm } from 'redux-form'
 import renderField from '../../../shared/renderField'
 import validate from '../../../shared/validate'
-import RenderErrors from '../../../shared/RenderErrors'
-import FormHeader from '../../../shared/FormHeader/FormHeader'
-import CreditSalesForm from './CreditSalesForm'
-import CashAdvanceForm from './CashAdvanceForm'
-import SaveBtn from '../../../shared/SaveBtn'
 
-const renderExpenses = ({ fields, meta: { error, submitFailed } }) => {
-  if (fields.length < 1) fields.push({})
-  return (
-    <>
-      <table class='table'>
-        <thead class='thead-light'>
-          <tr>
-            <th scope='col'>Description</th>
-            <th scope='col'>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {fields.map((expense, index) => (
-            <tr>
-              <th scope='row'>
-                <Field
-                  name={`${expense}.description`}
-                  type='text'
-                  component={renderField}
-                  index={index}
-                  fields={fields}
-                  small={true}
-                />
-              </th>
-              <td>
-                <Field
-                  type={'number'}
-                  name={`${expense}.amount`}
-                  step={0.01}
-                  small={true}
-                  component={renderField}
-                  withDelBtn={index === 0 ? false : true}
-                  withAddBtn={index === 0 ? true : false}
-                  index={index}
-                  fields={fields}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <RenderErrors errors={[submitFailed && error]} errorMessages={[error]} />
-    </>
-  )
-}
+import SaveBtn from '../../../shared/SaveBtn'
+import { Grid } from '@material-ui/core'
+import renderFieldArray from '../../../shared/renderFieldArray'
+import { connect } from 'react-redux'
+import FormCard from '../../../shared/FormCard'
 const ExpensesForm = (props) => {
-  const { handleSubmit, pristine, reset, submitting, error } = props
+  const { handleSubmit, pristine, reset, submitting, error, employees } = props
   return (
     <form onSubmit={handleSubmit}>
-      <div className='row'>
-        <div className='col'>
-          <FormHeader text='Utilities / Daily Expenses' />
-          <FieldArray name='expenses' component={renderExpenses} />
-        </div>
-      </div>
+      <Grid
+        container
+        spacing={2}
+        direction='row'
+        justify='center'
+        alignItems='flex-start'>
+        <Grid item md={6}>
+          <Grid
+            item
+            container
+            direction='row'
+            alignItems='flex-end'
+            spacing={1}
+            justify='center'>
+            <FormCard title='Utilities & Daily Expenses'>
+              <FieldArray
+                name='expenses'
+                type='expenses'
+                component={renderFieldArray}
+              />
+            </FormCard>
+          </Grid>
+        </Grid>
+        <Grid item container spacing={2} md={6}>
+          <Grid item md={12}>
+              <Grid
+                item
+                container
+                direction='row'
+                alignItems='flex-end'
+                spacing={1}
+                justify='center'>
+                        <FormCard title='Credit Sales'>
+                <FieldArray
+                  name='creditsales'
+                  type='creditsales'
+                  component={renderFieldArray}
+                />
+            </FormCard>
+              </Grid>
+          </Grid>
+          <Grid item md={12}>
+              <Grid
+                item
+                container
+                direction='row'
+                alignItems='flex-end'
+                spacing={1}
+                justify='center'>
+                        <FormCard title='Cash Advance'>
+                <FieldArray
+                  name='cashadvance'
+                  type='cashadvance'
+                  items={employees.results.map(
+                    (employee) => employee.eFN + ' ' + employee.eLN
+                  )}
+                  values={employees.results.map((employee) => employee.eId)}
+                  component={renderFieldArray}
+                />
+            </FormCard>
+              </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
 
-      <div className='row'>
-        <div className='col-md'>
-          <FormHeader text='Credit Sales' />
-          <CreditSalesForm />
-        </div>
-        <div className='col-md'>
-          <FormHeader text='Cash Advance' />
-          <CashAdvanceForm />
-        </div>
-      </div>
       <button type='submit'>submittas</button>
-      <SaveBtn/>
+      {/* <SaveBtn /> */}
     </form>
   )
 }
-
-export default reduxForm({
-  form: 'shiftForm', // <------ same form name
-  destroyOnUnmount: false, // <------ preserve form data
-  forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-  validate,
-})(ExpensesForm)
+const mapStateToProps = (state) => {
+  return {
+    employees: state.employees,
+  }
+}
+export default connect(mapStateToProps)(
+  reduxForm({
+    form: 'shiftForm', // <------ same form name
+    destroyOnUnmount: false, // <------ preserve form data
+    forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+    validate,
+  })(ExpensesForm)
+)

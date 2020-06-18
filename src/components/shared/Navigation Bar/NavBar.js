@@ -8,8 +8,7 @@ class NavBar extends React.Component {
         <Link
           to='/home'
           style={{ color: 'inherit', textDecoration: 'inherit' }}
-          className='navbar-brand'
-        >
+          className='navbar-brand'>
           MCB
         </Link>
 
@@ -20,8 +19,7 @@ class NavBar extends React.Component {
           data-target='#navbarNavDropdown'
           aria-controls='navbarNavDropdown'
           aria-expanded='false'
-          aria-label='Toggle navigation'
-        >
+          aria-label='Toggle navigation'>
           <span className='navbar-toggler-icon'></span>
         </button>
         <div className='collapse navbar-collapse' id='navbarNavDropdown'>
@@ -35,28 +33,24 @@ class NavBar extends React.Component {
                 role='button'
                 data-toggle='dropdown'
                 aria-haspopup='true'
-                aria-expanded='false'
-              >
+                aria-expanded='false'>
                 Reports
               </Link>
 
               <div
                 className='dropdown-menu'
-                aria-labelledby='navbarDropdownMenuLink'
-              >
+                aria-labelledby='navbarDropdownMenuLink'>
                 <Link
                   to='/addreport'
                   style={{ color: 'inherit', textDecoration: 'inherit' }}
-                  className='dropdown-item'
-                >
+                  className='dropdown-item'>
                   Add
                 </Link>
 
                 <Link
                   to='/xD'
                   style={{ color: 'inherit', textDecoration: 'inherit' }}
-                  className='dropdown-item'
-                >
+                  className='dropdown-item'>
                   Summary
                 </Link>
               </div>

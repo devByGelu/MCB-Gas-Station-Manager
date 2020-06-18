@@ -1,86 +1,43 @@
 import React, { Component, useEffect } from 'react'
 import RenderField from '../AdvanceReadingForm/RenderField'
-import Table from '../../../shared/Table/Table'
+// import Table from '../../../shared/Table/Table'
 import { Field, FieldArray, reduxForm } from 'redux-form'
 import renderField from '../../../shared/renderField'
-import RenderErrors from '../../../shared/RenderErrors'
 import validate from '../../../shared/validate'
+import {
+  TableBody,
+  TableHead,
+  Table,
+  TableRow,
+  TableCell,
+} from '@material-ui/core'
+import renderFieldArray from '../../../shared/renderFieldArray'
+import FormCard from '../../../shared/FormCard'
+
 // import submit from '../../../shared/submit'
-const renderDipstickReadingForm = ({
-  fields,
-  rows,
-  headers,
-  meta: { error, submitFailed },
-}) => {
-  if (fields.length < 1) headers.forEach(() => fields.push({}))
 
-  return (
-    <>
-      <table class='table'>
-        <thead class='thead-dark'>
-          <tr>
-            {headers.map((header, index) => (
-              <th scope='col'>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {fields.map((field, index) => (
-            <tr>
-              <th scope='row'>{rows[index]}</th>
-              <td>
-                <Field
-                  type={'number'}
-                  name={`${field}.openingLevel`}
-                  component={renderField}
-                  small={true}
-                  label='LEVEL'
-                />
-
-                <Field
-                  type={'number'}
-                  name={`${field}.openingLiters`}
-                  component={renderField}
-                  step={0.01}
-                  small={true}
-                  label='LITERS'
-                />
-              </td>
-
-              <td>
-                <Field
-                  type={'number'}
-                  name={`${field}.closingLevel`}
-                  component={renderField}
-                  small={true}
-                  label='LEVEL'
-                />
-                <Field
-                  type={'number'}
-                  name={`${field}.closingLiters`}
-                  component={renderField}
-                  step={0.01}
-                  small={true}
-                  label='LITERS'
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <RenderErrors errors={[submitFailed && error]} errorMessages={[error]} />
-    </>
-  )
-}
 export const DipstickReadingForm = ({ handleSubmit }) => {
   return (
     <form onSubmit={handleSubmit}>
-      <FieldArray
-        name='dipstick'
-        headers={['Product', 'Opening', 'Closing']}
-        rows={['Diesel', 'Accelrate', 'Jx Premium']}
-        component={renderDipstickReadingForm}
-      />
+      <FormCard title='Dipstick Reading'>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align='left'>Product</TableCell>
+              <TableCell align='left'>Opening</TableCell>
+              <TableCell align='left'>Closing</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            <FieldArray
+              name='dipstick'
+              component={renderFieldArray}
+              type='dipstick'
+            />
+          </TableBody>
+        </Table>
+      </FormCard>
       <button type='submit'>submit!!!</button>
     </form>
   )

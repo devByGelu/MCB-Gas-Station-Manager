@@ -90,6 +90,6 @@ export default connect(
 )(
   reduxForm({
     form: 'shiftForm', // a unique identifier for this form
-    // validate,
+    validate,
   })(MainFormNav)
 )
