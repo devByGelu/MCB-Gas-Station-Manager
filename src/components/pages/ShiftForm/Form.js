@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import {
@@ -31,13 +32,32 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import PumpTab from '../../shared/PumpTab'
 import FormCard from '../../shared/FormCard'
-import { fetchEmployees } from '../../../actions'
+import { fetchEmployees, fetchMonthForms } from '../../../actions'
+import { init } from './initGrp1'
+
+import Button from '@material-ui/core/Button'
+const dateFormat = require('dateformat')
 const useStyles = makeStyles({
   table: {
     maxWidth: 500,
   },
 })
 export const Form = (props) => {
+const {
+    error,
+    handleSubmit,
+    pristine,
+    reset,
+    submitting,
+    formSyncErrors,
+    submitFailed,
+    submitSucceeded,
+    openedForm,
+    fetchMonthForms,
+    monthForms
+    
+  } = props
+  const history = useHistory()
   const classes = useStyles()
   const pumps = [
     { label: 'PUMP 1', number: '1' },
@@ -51,22 +71,24 @@ export const Form = (props) => {
       'aria-controls': `vertical-tabpanel-${index}`,
     }
   }
-  const {
-    error,
-    handleSubmit,
-    pristine,
-    reset,
-    submitting,
-    formSyncErrors,
-    submitFailed,
-  } = props
+  
   useEffect(() => {
     if (props.employees === undefined || props.employees.results === null)
       props.fetchEmployees()
-  }, [])
+  },[])
 
+  // if(openedForm==null || openedForm===null){
 
+  //   history.push('/addreport')
+  // }
 
+  // if (submitSucceeded) {
+  //   let d = new Date(openedForm.date)
+  //   fetchMonthForms(dateFormat(d,'yyyy'),dateFormat(d,'m'))
+  // }
+
+  if(!openedForm.date)
+  history.push('/addreport')
   if (
     props.employees === undefined ||
     props.employees.results === null ||
@@ -190,8 +212,9 @@ export const Form = (props) => {
               </FormCard>
             </Grid>
           </Grid>
-
-          <button type='submit'>submit!!!</button>
+          <Button type='submit' variant='contained'>
+            {openedForm.attendance_form_fId == null ? 'create' : 'edit'}
+          </Button>
         </form>
       </React.Fragment>
     )
@@ -202,27 +225,16 @@ const mapStateToProps = (state) => {
     submitFailed: hasSubmitFailed('shiftForm')(state),
     formSyncErrors: getFormSyncErrors('shiftForm')(state),
     employees: state.employees,
+    openedForm: state.openedForm,
+    monthForms: state.monthForms
   }
 }
 // Returns appropriate submit handler
 
-export default connect(mapStateToProps, { fetchEmployees })(
+export default connect(mapStateToProps, { fetchEmployees,fetchMonthForms })(
   reduxForm({
     form: 'shiftForm',
-    initialValues: {
-      Cashier: 2,
-      pumpAttendants: [{ PA: 1 }],
-      pumpPrices: [
-        {},
-        {},
-      ],
-      advanceReading: [{}, {}, {}, {}],
-      dipstick: [{}, {}, {}],
-      lastDropBreakdown: [{denomination:1000,quantity:0}],
-      expenses: [{}],
-      creditsales: [{}],
-      cashadvance: [{}],
-    },
+    initialValues: init(),
     forceUnregisterOnUnmount: true,
     destroyOnUnmount: false,
     validate,

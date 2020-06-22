@@ -1,21 +1,17 @@
 import { SubmissionError } from 'redux-form'
 import FormsAPI from '../../apis/FormsAPI'
+import store from '../../store'
+import { fetchMonthForms, openForm } from '../../actions'
+import { openedForm } from '../../states/openedForm'
+import { monthForms } from '../../states/monthForms'
+
 const dateFormat = require('dateformat')
 
 const submitGroup1 = async (values) => {
-  let date = dateFormat(new Date(), 'isoDate')
-
   const employees = [
     ...values.pumpAttendants.map((e) => ({ eId: e.PA, role: 'attendant' })),
     { eId: values.Cashier, role: 'cashier' },
   ]
-  // const pumpLiters = [
-  //   ...values.pump1Liters,
-  //   ...values.pump2Liters,
-  //   ...values.pump3Liters,
-  //   ...values.pump4Liters,
-  // ]
-
   const pumpLiters = [
     {
       DieselEND: values.pump1DieselEND,
@@ -62,19 +58,44 @@ const submitGroup1 = async (values) => {
       JxPremiumMGN: values.pump4JxPremiumMGN,
     },
   ]
-
-  try {
-    await FormsAPI.post('/group1', {
-      eId: 2,
-      placement: 2,
-      date,
-      employees,
-      pumpPrices: values.pumpPrices,
-      pumpLiters,
-    })
-  } catch (error) {
-    console.log(error)
+  const willCreate = openedForm.attendance_form_fId === null
+  if (willCreate) {
+    const d = new Date(openedForm.date)
+    let fId = openedForm.fId
+    let placement = openedForm.placement
+    let shift = openedForm.shift
+    let date = dateFormat(d, 'isoDate')
+    try {
+      await FormsAPI.post('/group1', {
+        fId,
+        placement,
+        shift,
+        date,
+        employees,
+        pumpPrices: values.pumpPrices,
+        pumpLiters,
+      })
+      // Update fetchMonthForms and openedForm
+      await store.dispatch(
+        fetchMonthForms(dateFormat(d, 'yyyy'), dateFormat(d, 'm'))
+      )
+      store.dispatch(
+        openForm(
+          monthForms.results.find(
+            (form) =>
+              openedForm.date === form.date &&
+              openedForm.placement === form.placement
+          )
+        )
+      )
+    } catch (error) {
+      throw new SubmissionError(error.serverError)
+    }
+  } else {
+    // await FormsAPI.patch
+    alert('Implement edit mode')
   }
+
   /* if (!['john', 'paul', 'george', 'ringo'].includes(values.username)) {
       throw new SubmissionError({
         username: 'User does not exist',

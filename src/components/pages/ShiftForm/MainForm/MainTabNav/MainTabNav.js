@@ -4,10 +4,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import PhoneIcon from '@material-ui/icons/Phone'
-import FavoriteIcon from '@material-ui/icons/Favorite'
-import PersonPinIcon from '@material-ui/icons/PersonPin'
-import HelpIcon from '@material-ui/icons/Help'
 import ShoppingBasket from '@material-ui/icons/ShoppingBasket'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
@@ -18,7 +14,7 @@ import { Grid } from '@material-ui/core'
 import BookIcon from '@material-ui/icons/Book';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import MoneyIcon from '@material-ui/icons/Money';
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props
 
@@ -98,7 +94,7 @@ function MainTabNav(props) {
     <Tab label='Advance Reading' icon={<AssessmentIcon />} {...a11yProps(1)} />
     <Tab label='Dipstick Reading' icon={<AssessmentIcon />} {...a11yProps(2)} />
     <Tab label='Drop Form' icon={<MoneyIcon />} {...a11yProps(3)} />
-    <Tab label='Withdrawals' icon={<AccountBalanceWalletIcon />} {...a11yProps(4)} />
+    <Tab label='Withdrawals' icon={<ShoppingBasket />} {...a11yProps(4)} />
   </Tabs>
 </AppBar>
 <TabPanel className={classes.tab} value={value} index={0}>
