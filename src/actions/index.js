@@ -1,5 +1,7 @@
 import jsonPlaceholder from '../apis/jsonPlaceholder'
 import EmployeeAPI from '../apis/EmployeeAPI'
+import FormAPI from '../apis/FormAPI'
+import FormsAPI from '../apis/FormsAPI'
 export const fetch = () => async (dispatch) => {
   const response = await jsonPlaceholder.get('/posts')
   dispatch({ type: 'wawda', payload: response })
@@ -10,30 +12,6 @@ export const selectShiftFormDate = (selectedDate, selectedShift) => ({
   payload: {
     date: selectedDate,
     shift: selectedShift,
-  },
-})
-export const selectPump1ActiveNavLink = (productSelected) => ({
-  type: 'PUMP1_SELECTED_PRODUCT',
-  payload: {
-    product: productSelected,
-  },
-})
-export const selectPump2ActiveNavLink = (productSelected) => ({
-  type: 'PUMP2_SELECTED_PRODUCT',
-  payload: {
-    product: productSelected,
-  },
-})
-export const selectPump3ActiveNavLink = (productSelected) => ({
-  type: 'PUMP3_SELECTED_PRODUCT',
-  payload: {
-    product: productSelected,
-  },
-})
-export const selectPump4ActiveNavLink = (productSelected) => ({
-  type: 'PUMP4_SELECTED_PRODUCT',
-  payload: {
-    product: productSelected,
   },
 })
 
@@ -52,31 +30,23 @@ export const fetchEmployees = () => async (dispatch) => {
     })
   }
 }
+export const fetchMonthForms = (year, month) => async (dispatch) => {
+  dispatch({
+    type: 'FETCH_MONTH_FORMS_REQUEST',
+  })
 
-export const addPumpAttendantOnForm = (generatedId) => ({
-  type: 'SHIFT_FORM_ADD_PA',
-  payload: generatedId,
-})
-
-export const removePumpAttendantOnForm = (id) => ({
-  type: 'SHIFT_FORM_MIN_PA',
-  payload: id,
-})
-
-export const updatePumpAttendantOnForm = (selectorId, selected) => ({
-  type: 'SHIFT_FORM_UPDATE_PA',
-  payload: { selectorId, selected },
-})
-
-export const registerMainFormNavLinks = (labels) => ({
-  type: 'MAIN_FORM_REGISTER_LINKS',
-  payload: labels,
-})
-
-export const toggleMainFormNavLink = (label) => ({
-  type: 'TOGGLE_MAIN_FORM_NAV_LINK',
-  payload: label,
-})
+  try {
+    const response = await FormsAPI.get(`/${year}/${month}`)
+    console.log(response)
+    dispatch({ type: 'FETCH_MONTH_FORMS_SUCCESS', payload: response.data })
+  } catch (error) {
+    console.log(error.response)
+    dispatch({
+      type: 'FETCH_MONTH_FORMS_FAILURE',
+      payload: error.response,
+    })
+  }
+}
 
 export const changeActivePanel = (pumpNumIndex, active) => ({
   type: 'CHANGE_ACTIVE_PANEL',
@@ -85,4 +55,22 @@ export const changeActivePanel = (pumpNumIndex, active) => ({
     active,
   },
 })
+export const changeSelectedDay = (day) => ({
+  type: 'CHANGE_SELECTED_DAY',
+  payload: {
+    day,
+  },
+})
+export const changeSelectedDaySelectedForm = (placement) => ({
+  type: 'CHANGED_SELECTED_DAY_SELECTED_FORM',
+  payload: {
+    placement,
+  },
+})
 
+export const openForm = (form) => ({
+  type: 'OPEN_FORM',
+  payload: {
+    form,
+  },
+})
