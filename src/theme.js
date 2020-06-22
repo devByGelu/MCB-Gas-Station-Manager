@@ -4,18 +4,17 @@ import { createMuiTheme } from '@material-ui/core/styles'
 // A custom theme for this app
 const theme = createMuiTheme({
   palette: {
-    primary: {
-      main: '#556cd6',
-    },
     secondary: {
-      main: '#19857b',
+      main: '#ff9100',
+    },
+    primary: {
+      main: '#ef6c00',
     },
     error: {
       main: red.A400,
     },
     background: {
-      default: 'linear-gradient(45deg,#F37335 30%, #FDC830 90%)',
-   
+      default: ' linear-gradient(90deg, #ff9100 100%, #ef6c00 0%)  ',
     },
   },
 })
