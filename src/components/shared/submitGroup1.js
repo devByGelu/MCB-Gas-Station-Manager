@@ -89,7 +89,7 @@ const submitGroup1 = async (values) => {
         )
       )
     } catch (error) {
-      throw new SubmissionError(error.serverError)
+      throw new SubmissionError({_error: 'Failed to submit basic information'})
     }
   } else {
     // await FormsAPI.patch

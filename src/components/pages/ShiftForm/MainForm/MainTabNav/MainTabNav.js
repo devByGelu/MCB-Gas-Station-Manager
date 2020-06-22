@@ -14,9 +14,10 @@ import { Grid } from '@material-ui/core'
 import BookIcon from '@material-ui/icons/Book';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import MoneyIcon from '@material-ui/icons/Money';
+import { changeActiveTabNav } from '../../../../../actions'
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props
+  const {children, value, index, ...other } = props
 
   return (
     <div
@@ -59,12 +60,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MainTabNav(props) {
-  const { items } = props
+  const { items,activeTab ,changeActiveTabNav} = props
   const classes = useStyles()
-  const [value, setValue] = React.useState(0)
 
   const handleChange = (event, newValue) => {
-    setValue(newValue)
+    changeActiveTabNav(newValue)
   }
 
   return (
@@ -81,7 +81,7 @@ function MainTabNav(props) {
 <AppBar position='static' color='default'>
   <Tabs
     
-    value={value}
+    value={activeTab}
     onChange={handleChange}
     // variant='scrollable'
     scrollButtons='on'
@@ -97,19 +97,19 @@ function MainTabNav(props) {
     <Tab label='Withdrawals' icon={<ShoppingBasket />} {...a11yProps(4)} />
   </Tabs>
 </AppBar>
-<TabPanel className={classes.tab} value={value} index={0}>
+<TabPanel className={classes.tab} value={activeTab} index={0}>
   {items[0]}
 </TabPanel>
-<TabPanel className={classes.tab} value={value} index={1}>
+<TabPanel className={classes.tab} value={activeTab} index={1}>
   {items[1]}
 </TabPanel>
-<TabPanel className={classes.tab} value={value} index={2}>
+<TabPanel className={classes.tab} value={activeTab} index={2}>
   {items[2]}
 </TabPanel>
-<TabPanel className={classes.tab} value={value} index={3}>
+<TabPanel className={classes.tab} value={activeTab} index={3}>
   {items[3]}
 </TabPanel>
-<TabPanel className={classes.tab} value={value} index={4}>
+<TabPanel className={classes.tab} value={activeTab} index={4}>
   {items[4]}
 </TabPanel>
 </div>
@@ -118,9 +118,19 @@ function MainTabNav(props) {
 
   )
 }
+const mapDispatchToProps = (dispatch)=>{
+  return {
+    changeActiveTabNav: (tabIndex)=>dispatch(changeActiveTabNav(tabIndex)) 
+  }
+}
+const mapStateToProps = (state)=>{
+  return {
+    activeTab: state.activeTabNav
+  }
+}
 export default connect(
-  null,
-  null
+  mapStateToProps,
+  mapDispatchToProps
 )(
   reduxForm({
     form: 'shiftForm', // a unique identifier for this form

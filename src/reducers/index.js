@@ -7,6 +7,7 @@ import monthFormsReducer from './monthFormsReducer'
 import selectedDayReducer from './selectedDayReducer'
 import selectedDaySeletedDaySelectedFormReducer from './selectedDaySelectedFormReducer'
 import openedFormReducer from './openedFormReducer'
+import activeTabNavReducer from '../components/pages/ShiftForm/MainForm/MainTabNav/activeTabNavReducer'
 export default combineReducers({
   employees: employeesReducer,
   form: formReducer,
@@ -15,5 +16,6 @@ export default combineReducers({
   monthForms: monthFormsReducer,
   selectedDay: selectedDayReducer,
   selectedDaySelectedForm: selectedDaySeletedDaySelectedFormReducer,
-  openedForm: openedFormReducer
+  openedForm: openedFormReducer,
+  activeTabNav:activeTabNavReducer
 })

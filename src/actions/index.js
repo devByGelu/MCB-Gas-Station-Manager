@@ -2,11 +2,18 @@ import jsonPlaceholder from '../apis/jsonPlaceholder'
 import EmployeeAPI from '../apis/EmployeeAPI'
 import FormAPI from '../apis/FormAPI'
 import FormsAPI from '../apis/FormsAPI'
+
 export const fetch = () => async (dispatch) => {
   const response = await jsonPlaceholder.get('/posts')
   dispatch({ type: 'wawda', payload: response })
 }
 
+export const changeActiveTabNav = (tabIndex) => ({
+  type: 'CHANGE_ACTIVE_TAB',
+  payload: {
+    tabIndex
+  },
+})
 export const selectShiftFormDate = (selectedDate, selectedShift) => ({
   type: 'SHIFTFORM_DATE_SELECTED',
   payload: {
