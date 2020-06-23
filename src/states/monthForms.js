@@ -4,7 +4,7 @@ function select(state) {
   return state.monthForms
 }
 
-export let monthForms
+export let monthForms 
 
 function handleChange() {
   let previousValue = monthForms

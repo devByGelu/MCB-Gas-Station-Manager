@@ -1,22 +1,33 @@
-import React, { Component, useEffect } from 'react'
-import RenderField from '../AdvanceReadingForm/RenderField'
-// import Table from '../../../shared/Table/Table'
-import { Field, FieldArray, reduxForm } from 'redux-form'
-import renderField from '../../../shared/renderField'
-import validate from '../../../shared/validate'
+import React, { Component, useEffect } from "react"
+import { useHistory } from "react-router-dom"
+import SubmitButton from "../SubmitButton"
+import RenderField from "../AdvanceReadingForm/RenderField"
+
+import { Field, FieldArray, reduxForm } from "redux-form"
+import renderField from "../../../shared/renderField"
+import validate from "../../../shared/validate"
 import {
   TableBody,
   TableHead,
   Table,
   TableRow,
   TableCell,
-} from '@material-ui/core'
-import renderFieldArray from '../../../shared/renderFieldArray'
-import FormCard from '../../../shared/FormCard'
+} from "@material-ui/core"
+import renderFieldArray from "../../../shared/renderFieldArray"
+import FormCard from "../../../shared/FormCard"
+import { connect } from "react-redux"
+import { init } from "../initGrp1"
 
 // import submit from '../../../shared/submit'
 
-export const DipstickReadingForm = ({ handleSubmit }) => {
+export const DipstickReadingForm = ({
+  handleSubmit,
+  openedForm,
+  monthForms,
+  submitting,
+}) => {
+  const history = useHistory()
+  if (!openedForm.date) history.push("/addreport")
   return (
     <form onSubmit={handleSubmit}>
       <FormCard title='Dipstick Reading'>
@@ -38,14 +49,25 @@ export const DipstickReadingForm = ({ handleSubmit }) => {
           </TableBody>
         </Table>
       </FormCard>
-      <button type='submit'>submit!!!</button>
+      <SubmitButton
+        editMode={openedForm.dipstick_reading_form_fId !== null}
+        submitting={submitting}
+      />
     </form>
   )
 }
-export default reduxForm({
-  form: 'shiftForm', // <------ same form name
-  destroyOnUnmount: false, // <------ preserve form data
-  forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-  // validate,
-  // onSubmit: submit,
-})(DipstickReadingForm)
+const mapStateToProps = (state) => {
+  return {
+    openedForm: state.openedForm,
+    monthForms: state.monthForms,
+  }
+}
+export default connect(mapStateToProps)(
+  reduxForm({
+    form: "shiftForm", // <------ same form name
+    destroyOnUnmount: false, // <------ preserve form data
+    forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+    validate,
+    initialValues: init(),
+  })(DipstickReadingForm)
+)

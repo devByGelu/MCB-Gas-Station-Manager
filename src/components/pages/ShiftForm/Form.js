@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import SaveIcon from '@material-ui/icons/Save'
+import EditIcon from '@material-ui/icons/Edit';
+import Skeleton from "@material-ui/lab/Skeleton"
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
@@ -36,6 +39,7 @@ import { fetchEmployees, fetchMonthForms } from '../../../actions'
 import { init } from './initGrp1'
 
 import Button from '@material-ui/core/Button'
+import SubmitButton from './SubmitButton'
 const dateFormat = require('dateformat')
 const useStyles = makeStyles({
   table: {
@@ -77,16 +81,6 @@ const {
       props.fetchEmployees()
   },[])
 
-  // if(openedForm==null || openedForm===null){
-
-  //   history.push('/addreport')
-  // }
-
-  // if (submitSucceeded) {
-  //   let d = new Date(openedForm.date)
-  //   fetchMonthForms(dateFormat(d,'yyyy'),dateFormat(d,'m'))
-  // }
-
   if(!openedForm.date)
   history.push('/addreport')
   if (
@@ -95,9 +89,8 @@ const {
     props.employees.loading
   ) {
     return (
-      <div class='spinner-border text-primary' role='status'>
-        <span class='sr-only'>Loading...</span>
-      </div>
+
+      <Skeleton animation='wave' style={{ width: "100%", height: "100%" }} />
     )
   } else if (props.employees.error) {
     return (
@@ -111,7 +104,9 @@ const {
         }}
       />
     )
-  } else
+  } else{
+
+  const isSettled = openedForm.attendance_form_fId !== null
     return (
       <React.Fragment>
         <form onSubmit={handleSubmit}>
@@ -212,12 +207,11 @@ const {
               </FormCard>
             </Grid>
           </Grid>
-          <Button type='submit' variant='contained'>
-            {openedForm.attendance_form_fId == null ? 'create' : 'edit'}
-          </Button>
+          <SubmitButton editMode = {openedForm.attendance_form_fId !== null } submitting = {submitting}/> 
         </form>
       </React.Fragment>
     )
+  }
 }
 
 const mapStateToProps = (state) => {

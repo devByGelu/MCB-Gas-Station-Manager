@@ -4,7 +4,6 @@ import store from '../../store'
 import { fetchMonthForms, openForm } from '../../actions'
 import { openedForm } from '../../states/openedForm'
 import { monthForms } from '../../states/monthForms'
-
 const dateFormat = require('dateformat')
 
 const submitGroup1 = async (values) => {

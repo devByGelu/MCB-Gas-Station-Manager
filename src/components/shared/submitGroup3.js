@@ -1,30 +1,42 @@
 import { SubmissionError } from 'redux-form'
 import FormsAPI from '../../apis/FormsAPI'
-const dateFormat = require('dateformat')
+import store from '../../store'
+import { fetchMonthForms, openForm } from '../../actions'
+import { openedForm } from '../../states/openedForm'
+import { monthForms } from '../../states/monthForms'
 
+const dateFormat = require('dateformat')
 const submitGroup3 = async (values) => {
-  try {
+  const willCreate = openedForm.dipstick_reading_form_fId === null
+  if (willCreate) {
+    const d = new Date(openedForm.date)
+    const fId = openedForm.fId
     const dipstick = values.dipstick
-    await FormsAPI.post('/group3', {
-      fId: 42,
-      dipstick,
-    })
-  } catch (error) {
-    console.log(error)
+    try {
+      await FormsAPI.post('/group3', {
+        fId,
+        dipstick
+      })
+      // Update fetchMonthForms and openedForm
+      await store.dispatch(
+        fetchMonthForms(dateFormat(d, 'yyyy'), dateFormat(d, 'm'))
+      )
+      store.dispatch(
+        openForm(
+          monthForms.results.find(
+            (form) =>
+              openedForm.date === form.date &&
+              openedForm.placement === form.placement
+          )
+        )
+      )
+    } catch (error) {
+      throw new SubmissionError({_error: 'Failed to submit basic information'})
+    }
+  } else {
+    // await FormsAPI.patch
+    alert('Implement edit mode')
   }
-  /* if (!['john', 'paul', 'george', 'ringo'].includes(values.username)) {
-      throw new SubmissionError({
-        username: 'User does not exist',
-        _error: 'Login failed!'
-      })
-    } else if (values.password !== 'redux-form') {
-      throw new SubmissionError({
-        password: 'Wrong password',
-        _error: 'Login failed!'
-      })
-    } else {
-      window.alert(`You submitted:\n\n${JSON.stringify(values, null, 2)}`)
-    } */
 }
 
 export default submitGroup3

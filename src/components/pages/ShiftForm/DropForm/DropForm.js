@@ -12,10 +12,17 @@ import validate from '../../../shared/validate'
 import renderSelectField from '../../../shared/renderSelectField'
 import renderTextField from '../../../shared/renderTextField'
 import renderFieldArray from '../../../shared/renderFieldArray'
-const DropForm = (props) => {
+import SubmitButton from '../SubmitButton'
+import { connect } from 'react-redux'
+import { useHistory } from "react-router-dom";
+import { init } from '../initGrp1'
+import { fetchEmployees } from '../../../../actions'
+const DropForm = ({submitting,openedForm,monthForms,handleSubmit})  => {
+  const history = useHistory()
+  if (!openedForm.date) history.push("/addreport");
   return (
     <>
-      <form onSubmit={props.handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <Grid
           container
           spacing={3}
@@ -67,43 +74,29 @@ const DropForm = (props) => {
               </FormCard>
             </Grid>
           </Grid>
-          {/* 
-          <FormCard title='Drop Summary'>
-            <Grid item md={6}>
-              <Grid item container justify='center' spacing={2}>
-                <Grid item md={12}>
-                 
-                </Grid>
-
-                <Grid item md={12}>
-               
-                </Grid>
-
-                <Grid item md={12}>
-               
-                </Grid>
-
-              </Grid>
-            </Grid>
-          </FormCard>
-          <Grid item md={6}>
-            <Grid item container direction='row'>
-                
-              </FormCard>
-            </Grid>
-          </Grid> */}
         </Grid>
-
-        <button type='submit'>submitttt</button>
+      <SubmitButton
+        editMode={openedForm.drop_form_fId !== null}
+        submitting={submitting}
+      />
       </form>
     </>
   )
 }
 
-export default reduxForm({
+const mapStateToProps = (state) => {
+  return {
+    openedForm: state.openedForm,
+    monthForms: state.monthForms
+  }
+}
+
+export default connect(mapStateToProps,)(reduxForm({
   form: 'shiftForm', // <------ same form name
   destroyOnUnmount: false, // <------ preserve form data
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+  
+  initialValues: init(),
   validate,
-  // onSubmit: submit,
 })(DropForm)
+)

@@ -1,32 +1,45 @@
 import { SubmissionError } from 'redux-form'
 import FormsAPI from '../../apis/FormsAPI'
+import store from '../../store'
+import { fetchMonthForms, openForm } from '../../actions'
+import { openedForm } from '../../states/openedForm'
+import { monthForms } from '../../states/monthForms'
 const dateFormat = require('dateformat')
 
 const submitGroup5 = async (values) => {
-  try {
-    await FormsAPI.post('/group5', {
-      fId: 43,
+  const willCreate = openedForm.expense_form_fId === null
+  if (willCreate) {
+    const d = new Date(openedForm.date)
+    const date = dateFormat(d,'isoDate')
+    const fId = openedForm.fId
+    try {
+      await FormsAPI.post('/group5', {
+        fId,
       expenses: values.expenses,
-      date: '2020-06-11',
+      date,
       creditsales:values.creditsales,
       cashadvance:values.cashadvance
-    })
-  } catch (error) {
-    console.log(error)
+      })
+      // Update fetchMonthForms and openedForm
+      await store.dispatch(
+        fetchMonthForms(dateFormat(d, 'yyyy'), dateFormat(d, 'm'))
+      )
+      store.dispatch(
+        openForm(
+          monthForms.results.find(
+            (form) =>
+              openedForm.date === form.date &&
+              openedForm.placement === form.placement
+          )
+        )
+      )
+    } catch (error) {
+      throw new SubmissionError({_error: 'Failed to submit basic information'})
+    }
+  } else {
+    // await FormsAPI.patch
+    alert('Implement edit mode')
   }
-  /* if (!['john', 'paul', 'george', 'ringo'].includes(values.username)) {
-      throw new SubmissionError({
-        username: 'User does not exist',
-        _error: 'Login failed!'
-      })
-    } else if (values.password !== 'redux-form') {
-      throw new SubmissionError({
-        password: 'Wrong password',
-        _error: 'Login failed!'
-      })
-    } else {
-      window.alert(`You submitted:\n\n${JSON.stringify(values, null, 2)}`)
-    } */
 }
 
 export default submitGroup5

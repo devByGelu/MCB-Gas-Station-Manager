@@ -21,7 +21,7 @@ function daysInMonth(month, year) {
   return new Date(year, month, 0).getDate()
 }
 function DaysList(props) {
-  const { month, year, fetchFormMonth, fetchMonthForms, monthForms } = props
+  const { month, year, fetchMonthForms, monthForms } = props
   const dayLength = daysInMonth(month, year)
   let days = []
   for (let index = 0; index < dayLength; index++) days.unshift(index + 1)
@@ -50,7 +50,7 @@ function DaysList(props) {
   }
   useEffect(() => {
     fetchMonthForms(year, month)
-  }, [year, month])
+  }, [year, month, ])
   if (monthForms.error == null && !monthForms.loading && !monthForms.results)
     return <>init</>
   else if (monthForms.error !== null || monthForms.error !==null) return <>Error</>
@@ -83,7 +83,6 @@ function DaysList(props) {
 const mapStateToProps = (state) => {
   return {
     monthForms: state.monthForms,
-    monthForms: state.monthForms
   }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {

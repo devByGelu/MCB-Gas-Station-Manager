@@ -4,7 +4,7 @@ function select(state) {
   return state.openedForm
 }
 
-export let openedForm
+export let openedForm 
 
 function handleChange() {
   let previousValue = openedForm

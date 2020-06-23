@@ -1,50 +1,63 @@
-import React from 'react'
-import RenderField from './RenderField'
-import FormHeader from '../../../shared/FormHeader/FormHeader'
-import { Field, FieldArray, reduxForm } from 'redux-form'
-import renderField from '../../../shared/renderField'
-import validate from '../../../shared/validate'
+import React from "react";
+import { useHistory } from "react-router-dom";
+import { FieldArray, reduxForm } from "redux-form";
+import validate from "../../../shared/validate";
 import {
   Table,
   TableHead,
   TableCell,
   TableBody,
   TableRow,
-} from '@material-ui/core'
-import renderFieldArray from '../../../shared/renderFieldArray'
-import FormCard from '../../../shared/FormCard'
+} from "@material-ui/core";
+import renderFieldArray from "../../../shared/renderFieldArray";
+import FormCard from "../../../shared/FormCard";
+import SubmitButton from "../SubmitButton";
+import { connect } from "react-redux";
+import { init } from "../initGrp1";
 
-const AdvanceReadingForm = ({ handleSubmit }) => {
+const AdvanceReadingForm = ({ handleSubmit, openedForm, submitting }) => {
+  const history = useHistory();
+  if (!openedForm.date) history.push("/addreport");
   return (
     <form onSubmit={handleSubmit}>
       <FormCard title='Advance Reading'>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell align='left'>Pump</TableCell>
-            <TableCell align='left'>Diesel(L)</TableCell>
-            <TableCell align='left'>Accelrate(L)</TableCell>
-            <TableCell align='left'>Jx Premium(L)</TableCell>
-          </TableRow>
-        </TableHead>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align='left'>Pump</TableCell>
+              <TableCell align='left'>Diesel(L)</TableCell>
+              <TableCell align='left'>Accelrate(L)</TableCell>
+              <TableCell align='left'>Jx Premium(L)</TableCell>
+            </TableRow>
+          </TableHead>
 
-        <TableBody>
-          <FieldArray
-            name='advanceReading'
-            component={renderFieldArray}
-            type='advanceReading'
-          />
-        </TableBody>
-      </Table>
+          <TableBody>
+            <FieldArray
+              name='advanceReading'
+              component={renderFieldArray}
+              type='advanceReading'
+            />
+          </TableBody>
+        </Table>
       </FormCard>
-      <button type='submit'>submit!g2!</button>
+      <SubmitButton
+        editMode={openedForm.advance_reading_form_fId !== null}
+        submitting={submitting || openedForm.attendance_form_fId === null}
+      />
     </form>
-  )
-}
-export default reduxForm({
-  form: 'shiftForm', // <------ same form name
-  destroyOnUnmount: false, // <------ preserve form data
-  forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-  // onSubmit: submit,
-  validate,
-})(AdvanceReadingForm)
+  );
+};
+const mapStateToProps = (state) => {
+  return {
+    openedForm: state.openedForm,
+  };
+};
+export default connect(mapStateToProps)(
+  reduxForm({
+    form: "shiftForm", // <------ same form name
+    destroyOnUnmount: false, // <------ preserve form data
+    forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+    validate,
+    initialValues: init(),
+  })(AdvanceReadingForm)
+);
