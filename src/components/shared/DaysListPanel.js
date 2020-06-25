@@ -47,7 +47,7 @@ export default function DaysListPanel(props) {
     <Card className={classes.root} variant='outlined'>
       <CardHeader
         title={
-          <Typography className={classes.title} color='textPrimary'>
+          <Typography className={classes.title} color='textPrimary' component={'span'}>
             <div className={classes.cardHeaderText} >
               {dateFormat(new Date(), 'mmmm yyyy')}
             </div>
@@ -56,28 +56,10 @@ export default function DaysListPanel(props) {
         className={classes.cardHeaderTab}
       />
       <CardContent>
-        {/* <Typography
-          className={classes.title}
-          color='textSecondary'
-          gutterBottom>
-          {title}
-        </Typography> */}
-        {/* {children} */}
         <DaysList
           month={dateFormat(new Date(), 'm')}
           year={dateFormat(new Date(), 'yyyy')}
         />
-        {/* <Typography variant='h5' component='h2'>
-          be{bull}nev{bull}o{bull}lent
-        </Typography>
-        <Typography className={classes.pos} color='textSecondary'>
-          adjective
-        </Typography>
-        <Typography variant='body2' component='p'>
-          well meaning and kindly.
-          <br />
-          {'"a benevolent smile"'} */}
-        {/* </Typography> */}
       </CardContent>
       <CardActions>
         <Button size='small'>Learn More</Button>

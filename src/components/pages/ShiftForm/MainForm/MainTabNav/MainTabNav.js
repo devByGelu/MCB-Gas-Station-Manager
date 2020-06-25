@@ -14,7 +14,7 @@ import { Grid } from "@material-ui/core"
 import BookIcon from "@material-ui/icons/Book"
 import AssessmentIcon from "@material-ui/icons/Assessment"
 import MoneyIcon from "@material-ui/icons/Money"
-import { changeActiveTabNav, openForm } from "../../../../../actions"
+import { changeActiveTabNav, openForm, closeForm } from "../../../../../actions"
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props
@@ -28,7 +28,7 @@ function TabPanel(props) {
       {...other}>
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          <Typography comonent={"span"}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -59,15 +59,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 function MainTabNav(props) {
-  const { items, openForm, activeTab, changeActiveTabNav } = props
+  const {closeForm, items, activeTab, changeActiveTabNav } = props
   const classes = useStyles()
 
   useEffect(() => {
     // on unmount close form
     return () => {
-      openForm({})
+     closeForm() 
     }
-  },[])
+  }, [])
   const handleChange = (event, newValue) => {
     changeActiveTabNav(newValue)
   }
@@ -136,7 +136,7 @@ function MainTabNav(props) {
 const mapDispatchToProps = (dispatch) => {
   return {
     changeActiveTabNav: (tabIndex) => dispatch(changeActiveTabNav(tabIndex)),
-    openForm: (form) => dispatch(openForm(form)),
+    closeForm: () => dispatch(closeForm()),
   }
 }
 const mapStateToProps = (state) => {

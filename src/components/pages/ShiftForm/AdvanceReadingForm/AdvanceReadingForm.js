@@ -13,7 +13,6 @@ import renderFieldArray from "../../../shared/renderFieldArray";
 import FormCard from "../../../shared/FormCard";
 import SubmitButton from "../SubmitButton";
 import { connect } from "react-redux";
-import { init } from "../initGrp1";
 
 const AdvanceReadingForm = ({ handleSubmit, openedForm, submitting }) => {
   const history = useHistory();
@@ -50,6 +49,7 @@ const AdvanceReadingForm = ({ handleSubmit, openedForm, submitting }) => {
 const mapStateToProps = (state) => {
   return {
     openedForm: state.openedForm,
+    initialValues: state.formBasicInformation.results
   };
 };
 export default connect(mapStateToProps)(
@@ -58,6 +58,5 @@ export default connect(mapStateToProps)(
     destroyOnUnmount: false, // <------ preserve form data
     forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
     validate,
-    initialValues: init(),
   })(AdvanceReadingForm)
 );

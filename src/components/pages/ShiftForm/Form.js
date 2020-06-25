@@ -1,53 +1,57 @@
-import React, { useEffect, useState } from 'react'
-import SaveIcon from '@material-ui/icons/Save'
-import EditIcon from '@material-ui/icons/Edit';
+import React, { useEffect, useState } from "react"
+import SaveIcon from "@material-ui/icons/Save"
+import EditIcon from "@material-ui/icons/Edit"
 import Skeleton from "@material-ui/lab/Skeleton"
-import { useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import { connect } from 'react-redux'
+import { useHistory } from "react-router-dom"
+import { makeStyles } from "@material-ui/core/styles"
+import { connect } from "react-redux"
 import {
   Field,
   reduxForm,
   FieldArray,
   hasSubmitFailed,
   getFormSyncErrors,
-} from 'redux-form'
-import { Redirect } from 'react-router-dom'
+} from "redux-form"
+import { Redirect } from "react-router-dom"
 
-import Grid from '@material-ui/core/Grid'
-import renderField from '../../shared/renderField'
+import Grid from "@material-ui/core/Grid"
+import renderField from "../../shared/renderField"
 // import { fetchEmployees } from '../../../actions/index'
 
-import FormHeader from '../../shared/FormHeader/FormHeader'
-import validate from '../../shared/validate'
-import renderSelectField from '../../shared/renderSelectField'
-import SelectOptionsMapper from '../../shared/SelectOptionsMapper'
-import renderFieldArray from '../../shared/renderFieldArray'
+import FormHeader from "../../shared/FormHeader/FormHeader"
+import validate from "../../shared/validate"
+import renderSelectField from "../../shared/renderSelectField"
+import SelectOptionsMapper from "../../shared/SelectOptionsMapper"
+import renderFieldArray from "../../shared/renderFieldArray"
 
-import { withStyles } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import PumpTab from '../../shared/PumpTab'
-import FormCard from '../../shared/FormCard'
-import { fetchEmployees, fetchMonthForms } from '../../../actions'
-import { init } from './initGrp1'
+import { withStyles } from "@material-ui/core/styles"
+import Table from "@material-ui/core/Table"
+import TableBody from "@material-ui/core/TableBody"
+import TableCell from "@material-ui/core/TableCell"
+import TableHead from "@material-ui/core/TableHead"
+import TableRow from "@material-ui/core/TableRow"
+import Paper from "@material-ui/core/Paper"
+import Tabs from "@material-ui/core/Tabs"
+import Tab from "@material-ui/core/Tab"
+import PumpTab from "../../shared/PumpTab"
+import FormCard from "../../shared/FormCard"
+import {
+  fetchEmployees,
+  fetchMonthForms,
+  fetchBasicInformation,
+} from "../../../actions"
+import { init } from "./formInit"
 
-import Button from '@material-ui/core/Button'
-import SubmitButton from './SubmitButton'
-const dateFormat = require('dateformat')
+import Button from "@material-ui/core/Button"
+import SubmitButton from "./SubmitButton"
+const dateFormat = require("dateformat")
 const useStyles = makeStyles({
   table: {
     maxWidth: 500,
   },
 })
 export const Form = (props) => {
-const {
+  const {
     error,
     handleSubmit,
     pristine,
@@ -58,45 +62,44 @@ const {
     submitSucceeded,
     openedForm,
     fetchMonthForms,
-    monthForms
-    
+    formBasicInformation,
+    monthForms,
+    fetchBasicInformation,
   } = props
   const history = useHistory()
   const classes = useStyles()
   const pumps = [
-    { label: 'PUMP 1', number: '1' },
-    { label: 'PUMP 2', number: '2' },
-    { label: 'PUMP 3', number: '3' },
-    { label: 'PUMP 4', number: '4' },
+    { label: "PUMP 1", number: "1" },
+    { label: "PUMP 2", number: "2" },
+    { label: "PUMP 3", number: "3" },
+    { label: "PUMP 4", number: "4" },
   ]
-  function a11yProps(index) {
-    return {
-      id: `vertical-tab-${index}`,
-      'aria-controls': `vertical-tabpanel-${index}`,
+  useEffect(() => {
+    if (openedForm.attendance_form_fId !== null && openedForm.attendance_form_fId) {
+      fetchBasicInformation(openedForm.fId)
+      alert("fetching basic info")
     }
-  }
-  
+  }, [openedForm.attendance_form_fId,openedForm])
+
   useEffect(() => {
     if (props.employees === undefined || props.employees.results === null)
       props.fetchEmployees()
-  },[])
+  }, [])
 
-  if(!openedForm.date)
-  history.push('/addreport')
+  if (!openedForm.date) history.push("/addreport")
   if (
     props.employees === undefined ||
     props.employees.results === null ||
     props.employees.loading
   ) {
     return (
-
       <Skeleton animation='wave' style={{ width: "100%", height: "100%" }} />
     )
   } else if (props.employees.error) {
     return (
       <Redirect
         to={{
-          pathname: '/error-page',
+          pathname: "/error-page",
           state: {
             status: props.employees.error.status,
             data: props.employees.error.data,
@@ -104,9 +107,8 @@ const {
         }}
       />
     )
-  } else{
-
-  const isSettled = openedForm.attendance_form_fId !== null
+  } else {
+    const isSettled = openedForm.attendance_form_fId !== null
     return (
       <React.Fragment>
         <form onSubmit={handleSubmit}>
@@ -145,7 +147,7 @@ const {
                         component={renderSelectField}>
                         <SelectOptionsMapper
                           items={props.employees.results.map(
-                            (employee) => employee.eFN + ' ' + employee.eLN
+                            (employee) => employee.eFN + " " + employee.eLN
                           )}
                           values={props.employees.results.map(
                             (employee) => employee.eId
@@ -163,7 +165,7 @@ const {
                         name='pumpAttendants'
                         component={renderFieldArray}
                         items={props.employees.results.map(
-                          (employee) => employee.eFN + ' ' + employee.eLN
+                          (employee) => employee.eFN + " " + employee.eLN
                         )}
                         values={props.employees.results.map(
                           (employee) => employee.eId
@@ -207,7 +209,10 @@ const {
               </FormCard>
             </Grid>
           </Grid>
-          <SubmitButton editMode = {openedForm.attendance_form_fId !== null } submitting = {submitting}/> 
+          <SubmitButton
+            editMode={openedForm.attendance_form_fId !== null}
+            submitting={submitting}
+          />
         </form>
       </React.Fragment>
     )
@@ -216,19 +221,26 @@ const {
 
 const mapStateToProps = (state) => {
   return {
-    submitFailed: hasSubmitFailed('shiftForm')(state),
-    formSyncErrors: getFormSyncErrors('shiftForm')(state),
+    submitFailed: hasSubmitFailed("shiftForm")(state),
+    formSyncErrors: getFormSyncErrors("shiftForm")(state),
     employees: state.employees,
     openedForm: state.openedForm,
-    monthForms: state.monthForms
+    monthForms: state.monthForms,
+    initialValues: state.formBasicInformation.results,
+    formBasicInformation: state.formBasicInformation
+    
   }
 }
 // Returns appropriate submit handler
 
-export default connect(mapStateToProps, { fetchEmployees,fetchMonthForms })(
+export default connect(mapStateToProps, {
+  fetchEmployees,
+  fetchMonthForms,
+  fetchBasicInformation,
+})(
   reduxForm({
-    form: 'shiftForm',
-    initialValues: init(),
+    form: "shiftForm",
+    enableReinitialize: true,
     forceUnregisterOnUnmount: true,
     destroyOnUnmount: false,
     validate,

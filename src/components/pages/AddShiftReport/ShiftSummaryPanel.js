@@ -37,13 +37,13 @@ const ShiftSummaryPanel = ({ activeForm, openForm,changeActiveTabNav }) => {
     "Drop Form",
     "Withdrawals",
   ]
-  const isSettled = (index) => activeForm[indicators[index]] !== null
+  const isSettled = (index) => activeForm[indicators[index]] !== null 
   const icons = [
-    <BookIcon color={isSettled(0) ? "primary" : ""} />,
-    <AssessmentIcon color={isSettled(1) ? "primary" : ""} />,
-    <AssessmentIcon color={isSettled(2) ? "primary" : ""} />,
-    <MoneyIcon color={isSettled(3) ? "primary" : ""} />,
-    <ShoppingBasket color={isSettled(4) ? "primary" : ""} />,
+    <BookIcon color={isSettled(0) ? "primary" : "action"} />,
+    <AssessmentIcon color={isSettled(1) ? "primary" : "action"} />,
+    <AssessmentIcon color={isSettled(2) ? "primary" : "action"} />,
+    <MoneyIcon color={isSettled(3) ? "primary" : "action"} />,
+    <ShoppingBasket color={isSettled(4) ? "primary" : "action"} />,
   ]
   const item = (isSettled, indicator, index) => {
     const icon = isSettled ? (
@@ -96,11 +96,6 @@ const ShiftSummaryPanel = ({ activeForm, openForm,changeActiveTabNav }) => {
     <>Create a form</>
   )
 }
-
-ShiftSummaryPanel.propTypes = {
-  prop: PropTypes,
-}
-
 const mapStateToProps = (state) => ({})
 
 const mapDispatchToProps = (dispatch, ownProps) => {

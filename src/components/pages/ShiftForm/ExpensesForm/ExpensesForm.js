@@ -12,7 +12,6 @@ import { connect } from "react-redux"
 import FormCard from "../../../shared/FormCard"
 import { useHistory } from "react-router-dom"
 import SubmitButton from "../SubmitButton"
-import { init } from "../initGrp1"
 import { fetchEmployees } from "../../../../actions"
 const ExpensesForm = (props) => {
   const {
@@ -119,7 +118,7 @@ const ExpensesForm = (props) => {
           </Grid>
         </Grid>
         <SubmitButton
-          editMode={openedForm.expenses_form_fId !== null}
+          editMode={openedForm.expense_form_fId !== null}
           submitting={submitting}
         />
       </form>
@@ -130,6 +129,7 @@ const mapStateToProps = (state) => {
     employees: state.employees,
     openedForm: state.openedForm,
     monthForms: state.monthForms,
+    initialValues: state.formBasicInformation.results
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -146,6 +146,5 @@ export default connect(
     destroyOnUnmount: false, // <------ preserve form data
     forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
     validate,
-    initialValues: init(),
   })(ExpensesForm)
 )

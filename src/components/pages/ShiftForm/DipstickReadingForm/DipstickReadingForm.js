@@ -16,7 +16,6 @@ import {
 import renderFieldArray from "../../../shared/renderFieldArray"
 import FormCard from "../../../shared/FormCard"
 import { connect } from "react-redux"
-import { init } from "../initGrp1"
 
 // import submit from '../../../shared/submit'
 
@@ -60,6 +59,7 @@ const mapStateToProps = (state) => {
   return {
     openedForm: state.openedForm,
     monthForms: state.monthForms,
+    initialValues: state.formBasicInformation.results
   }
 }
 export default connect(mapStateToProps)(
@@ -68,6 +68,5 @@ export default connect(mapStateToProps)(
     destroyOnUnmount: false, // <------ preserve form data
     forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
     validate,
-    initialValues: init(),
   })(DipstickReadingForm)
 )

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import Card from "@material-ui/core/Card"
 import CardActions from "@material-ui/core/CardActions"
@@ -18,6 +18,7 @@ import {
   postFormRequest,
   fetchMonthForms,
   openForm,
+  changeSelectedDaySelectedForm,
 } from "../../actions"
 import { useHistory } from "react-router-dom"
 const dateFormat = require("dateformat")
@@ -52,7 +53,9 @@ const useStyles = makeStyles((theme) => ({
 
 function SelectedDayPanel(props) {
   const {
+    changeSelectedDaySelectedForm,
     openForm,
+    openedForm,
     createForm,
     createFormStatus,
     title,
@@ -61,13 +64,12 @@ function SelectedDayPanel(props) {
     monthForms,
     selectedDay,
     changeSelectedDay,
-    openedForm,
-    activeFormPlacement,
+    selectedDaySelectedForm,
     fetchMonthForms,
   } = props
   const classes = useStyles()
   const history = useHistory()
-  const bull = <span className={classes.bullet}>•</span>
+ 
   if(openedForm.fId)
     history.push('/addreport/new')
   if (monthForms.error == null && !monthForms.loading && !monthForms.results)
@@ -79,7 +81,7 @@ function SelectedDayPanel(props) {
     //   return <>init</>
     if (createFormStatus.error !== null || createFormStatus.error !== null)
       return <>Error</>
-    else if (createFormStatus.loading)o
+    else if (createFormStatus.loading)
       return (
         <>
           <Skeleton />
@@ -89,38 +91,32 @@ function SelectedDayPanel(props) {
       )
     else {
       // Init selected day to first el in monthForms
-      let sameDateForms = [{}, {}, {}, {}, {}, {}, {}]
-      for (let i = 0; i < monthForms.results.length; i++) {
+      let sameDateForms = []
+      for (let i = 0 ; i < monthForms.results.length; i++) {
         const d = new Date(monthForms.results[i].date)
         const elDay = d.getDate()
-        console.log(selectedDay, "is equal", elDay)
         if (selectedDay == elDay) {
-          // console.log(selectedDay, 'is equal', elDay)
-          sameDateForms[parseInt(monthForms.results[i].placement) - 1] =
-            monthForms.results[i]
+          sameDateForms.push(monthForms.results[i]) 
         }
       }
-      const activeForm = sameDateForms.find(
-        (f) => f.placement == activeFormPlacement
-      )
-      const handleClick = async () => {
-        const monthBasis = new Date(monthForms.results[0].date)
-        const year = dateFormat(monthBasis, "yyyy")
-        const month = dateFormat(monthBasis, "mm")
-        const day = selectedDay
+      const activeForm = sameDateForms[selectedDaySelectedForm]
+      const handleClick = () => {
         const placement = 1
         const eId = 2
         const shift = 'AM'
-        createForm(year, month, day, placement, eId,shift)
-
+        createForm(monthForms.year, monthForms.month, selectedDay, placement, eId,shift)
       }
+      const renderHeader = () => {
+        const d = new Date(`${monthForms.year}-${monthForms.month}-${selectedDay}`)
+        return dateFormat(d,'dddd, mmmm d') 
+      } 
 
       return (
         <Card className={classes.root} variant='outlined'>
           <CardHeader
             title={
-              <Typography className={classes.title} color='textPrimary'>
-                <div className={classes.cardHeaderText}>Shift Information</div>
+              <Typography className={classes.title} color='textPrimary'  component={'span'}>
+                <div className={classes.cardHeaderText}>{renderHeader()}</div>
               </Typography>
             }
             className={classes.cardHeaderTab}
@@ -140,8 +136,8 @@ function SelectedDayPanel(props) {
                   <Grid item md={12}>
                     <Paper elevation={3}>
                       <HorizontalLinearStepper
-                        forms={sameDateForms}
-                        activeFormPlacement={activeFormPlacement}
+                        sameDateForms={sameDateForms}
+                        selectedDaySelectedForm={selectedDaySelectedForm}
                       />
                     </Paper>
                   </Grid>
@@ -153,7 +149,7 @@ function SelectedDayPanel(props) {
                 </>
               ) : (
                 <>
-                  <Button onClick={handleClick}>Create New</Button>
+                  <Button onClick={handleClick}>Create Form</Button>
                 </>
               )}
             </Grid>
@@ -168,10 +164,10 @@ function SelectedDayPanel(props) {
 const mapStateToProps = (state) => {
   return {
     monthForms: state.monthForms,
-    openedForm: state.openedForm,
     selectedDay: state.selectedDay,
-    activeFormPlacement: state.selectedDaySelectedForm,
+    selectedDaySelectedForm: state.selectedDaySelectedForm,
     createFormStatus: state.createFormStatus,
+    openedForm: state.openedForm
   }
 }
 
@@ -181,6 +177,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(postFormRequest(year, month, day, placement, eId,shift)),
     fetchMonthForms: (year, month) => dispatch(fetchMonthForms(year, month)),
     openForm: (form)=> dispatch(openForm(form))
+    ,changeSelectedDaySelectedForm: (index)=>dispatch(changeSelectedDaySelectedForm(index))
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SelectedDayPanel)

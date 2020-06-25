@@ -5,6 +5,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import StarIcon from '@material-ui/icons/Star'
+import nextId from "react-id-generator";
 import  DaysListItem  from './DaysListItem'
 import Skeleton from '@material-ui/lab/Skeleton';
 import { fetchFormMonth, fetchMonthForms } from '../../../actions'
@@ -71,6 +72,7 @@ function DaysList(props) {
         style={{ overflow: 'auto', maxHeight: 320, overflowX: 'hidden' }}>
         {days.map((day) => (
           <DaysListItem
+            key={nextId()}
             day={day}
             month={month}
             year={year}

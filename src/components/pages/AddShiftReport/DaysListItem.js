@@ -43,7 +43,6 @@ const DaysListItem = ({
           button
           onClick={() => {
             changeSelectedDay(day)
-            resetSelectedDaySelectedForm()
           }}>
           <ListItemIcon>{listItemIcon(completionState)}</ListItemIcon>
           <ListItemText primary={`${day}${prefix}`} />
@@ -57,8 +56,6 @@ const DaysListItem = ({
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     changeSelectedDay: (day) => dispatch(changeSelectedDay(day)),
-    resetSelectedDaySelectedForm: () =>
-      dispatch(changeSelectedDaySelectedForm(1)),
   }
 }
 export default connect(null, mapDispatchToProps)(DaysListItem)

@@ -15,7 +15,6 @@ import renderFieldArray from '../../../shared/renderFieldArray'
 import SubmitButton from '../SubmitButton'
 import { connect } from 'react-redux'
 import { useHistory } from "react-router-dom";
-import { init } from '../initGrp1'
 import { fetchEmployees } from '../../../../actions'
 const DropForm = ({submitting,openedForm,monthForms,handleSubmit})  => {
   const history = useHistory()
@@ -87,7 +86,8 @@ const DropForm = ({submitting,openedForm,monthForms,handleSubmit})  => {
 const mapStateToProps = (state) => {
   return {
     openedForm: state.openedForm,
-    monthForms: state.monthForms
+    monthForms: state.monthForms,
+    initialValues: state.formBasicInformation.results
   }
 }
 
@@ -95,8 +95,6 @@ export default connect(mapStateToProps,)(reduxForm({
   form: 'shiftForm', // <------ same form name
   destroyOnUnmount: false, // <------ preserve form data
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-  
-  initialValues: init(),
   validate,
 })(DropForm)
 )

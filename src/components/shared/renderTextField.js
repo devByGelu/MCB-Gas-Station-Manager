@@ -20,6 +20,7 @@ const renderTextField = ({
 }) => (
   <FormControl size='small'>
     <TextField
+      type={type}
       label={label}
       size='small'
       InputProps={{
