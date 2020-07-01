@@ -102,7 +102,7 @@ function SelectedDayPanel(props) {
       const activeForm = sameDateForms[selectedDaySelectedForm]
       const handleClick = () => {
         const placement = 1
-        const eId = 2
+        const eId = 19
         const shift = 'AM'
         createForm(monthForms.year, monthForms.month, selectedDay, placement, eId,shift)
       }

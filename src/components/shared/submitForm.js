@@ -26,7 +26,7 @@ const submitForm = async (values, dispatch, props) => {
       month: 6,
       day: 1,
       placement: values.placement,
-      eId: 2,
+      eId: 19,
       shift: values.shift,
     })
     dispatch({ type: "POST_FORM_SUCCESS", payload: response.data[0] })

@@ -1,4 +1,4 @@
-const init = [{ active: 1 }, { active: 1 }, { active: 1 }, { active: 1 }]
+const init = [{ active: 0 }, { active: 0 }, { active: 0 }, { active: 0 }]
 export default (state =  init , action) => {
   switch (action.type) {
     case 'CHANGE_ACTIVE_PANEL': {

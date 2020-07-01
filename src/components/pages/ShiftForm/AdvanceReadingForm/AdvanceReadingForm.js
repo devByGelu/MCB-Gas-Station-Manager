@@ -14,9 +14,7 @@ import FormCard from "../../../shared/FormCard";
 import SubmitButton from "../SubmitButton";
 import { connect } from "react-redux";
 
-const AdvanceReadingForm = ({ handleSubmit, openedForm, submitting }) => {
-  const history = useHistory();
-  if (!openedForm.date) history.push("/addreport");
+const AdvanceReadingForm = ({ handleSubmit,monthForms, openedForm, submitting }) => {
   return (
     <form onSubmit={handleSubmit}>
       <FormCard title='Advance Reading'>
@@ -48,8 +46,9 @@ const AdvanceReadingForm = ({ handleSubmit, openedForm, submitting }) => {
 };
 const mapStateToProps = (state) => {
   return {
-    openedForm: state.openedForm,
-    initialValues: state.formBasicInformation.results
+    initialValues: state.formInitialValues.results,
+    monthForms: state.monthForms,
+    openedForm: state.openedForm
   };
 };
 export default connect(mapStateToProps)(

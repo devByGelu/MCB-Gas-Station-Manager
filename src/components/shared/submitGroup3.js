@@ -1,35 +1,21 @@
 import { SubmissionError } from 'redux-form'
 import FormsAPI from '../../apis/FormsAPI'
-import store from '../../store'
-import { fetchMonthForms, openForm } from '../../actions'
-import { openedForm } from '../../states/openedForm'
-import { monthForms } from '../../states/monthForms'
+import { updateOpenedForm } from '../../actions'
 
 const dateFormat = require('dateformat')
-const submitGroup3 = async (values) => {
-  const willCreate = openedForm.dipstick_reading_form_fId === null
+const submitGroup3 = async (values,dispatch,props) => {
+  const willCreate = props.openedForm.dipstick_reading_form_fId === null
   if (willCreate) {
-    const d = new Date(openedForm.date)
-    const fId = openedForm.fId
+    const d = new Date(props.openedForm.date)
+    const fId = props.openedForm.fId
     const dipstick = values.dipstick
     try {
       await FormsAPI.post('/group3', {
         fId,
         dipstick
       })
-      // Update fetchMonthForms and openedForm
-      await store.dispatch(
-        fetchMonthForms(dateFormat(d, 'yyyy'), dateFormat(d, 'm'))
-      )
-      store.dispatch(
-        openForm(
-          monthForms.results.find(
-            (form) =>
-              openedForm.date === form.date &&
-              openedForm.placement === form.placement
-          )
-        )
-      )
+      // Update fetchMonthForms and props.openedForm
+      dispatch(updateOpenedForm(d, props.openedForm.placement))
     } catch (error) {
       throw new SubmissionError({_error: 'Failed to submit basic information'})
     }

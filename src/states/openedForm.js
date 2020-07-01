@@ -10,14 +10,6 @@ function handleChange() {
   let previousValue = openedForm
   openedForm = select(store.getState())
 
-  if (previousValue !== openedForm) {
-    console.log(
-      'Some deep nested property changed from',
-      previousValue,
-      'to',
-      openedForm
-    )
-  }
 }
 
 /* const unsubscribe =  */store.subscribe(handleChange)

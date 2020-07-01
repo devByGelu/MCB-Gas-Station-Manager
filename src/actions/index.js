@@ -3,6 +3,108 @@ import EmployeeAPI from "../apis/EmployeeAPI"
 import FormAPI from "../apis/FormAPI"
 import FormsAPI from "../apis/FormsAPI"
 import formInit from "../components/pages/ShiftForm/formInit"
+const dateFormat = require("dateformat")
+export const fetchFormInitialValues = (fId, openedForm) => async (dispatch) => {
+  dispatch({
+    type: "FORM_INITIAL_VALUES_REQUEST",
+  })
+  try {
+    const {
+      attendance_form_fId,
+      advance_reading_form_fId,
+      dipstick_reading_form_fId,
+      drop_form_fId,
+      expense_form_fId,
+    } = openedForm
+    let basicInfo, advanceReading, dipstickReading, dropForm, expenseForm
+    let formInitVals = formInit()
+    let payload = {
+      ...formInitVals,
+    }
+
+    if (attendance_form_fId != null) {
+      basicInfo = await FormsAPI.get("/group1", {
+        params: {
+          fId,
+        },
+      })
+      payload = { ...payload, ...basicInfo.data }
+    }
+    if (advance_reading_form_fId != null) {
+      advanceReading = await FormsAPI.get("/group2", {
+        params: {
+          fId,
+        },
+      })
+      payload = { ...payload, ...advanceReading.data }
+    }
+    if (dipstick_reading_form_fId != null) {
+      dipstickReading = await FormsAPI.get("/group3", {
+        params: {
+          fId,
+        },
+      })
+
+      payload = { ...payload, ...dipstickReading.data }
+    }
+    if (drop_form_fId != null) {
+      dropForm = await FormsAPI.get("/group4", {
+        params: {
+          fId,
+        },
+      })
+      payload = { ...payload, ...dropForm.data }
+    }
+    if (expense_form_fId != null) {
+      expenseForm = await FormsAPI.get("/group5", {
+        params: {
+          fId,
+        },
+      })
+      payload = { ...payload, ...expenseForm.data }
+    }
+
+    dispatch({
+      type: "FORM_INITIAL_VALUES_SUCCESS",
+      payload: payload,
+    })
+  } catch (error) {
+    console.log(error)
+    console.log(error.response)
+    dispatch({
+      type: "FORM_INITIAL_VALUES_FAILURE",
+      payload: error.response,
+    })
+  }
+}
+export const updateOpenedForm = (date, placement) => async (dispatch) => {
+  let response
+  dispatch({
+    type: "FETCH_MONTH_FORMS_REQUEST",
+  })
+
+  try {
+    response = await FormsAPI.get(
+      `/${dateFormat(date, "yyyy")}/${dateFormat(date, "m")}`
+    )
+    dispatch({ type: "FETCH_MONTH_FORMS_SUCCESS", payload: response.data })
+  } catch (error) {
+    console.log(error.response)
+    dispatch({
+      type: "FETCH_MONTH_FORMS_FAILURE",
+      payload: error.response,
+    })
+  }
+  let form = response.data.find(
+    (form) => form.date === date && placement === placement
+  )
+  dispatch({
+    type: "OPEN_FORM",
+    payload: {
+      form,
+    },
+  })
+}
 export const closeForm = () => ({
   type: "CLOSE_FORM",
 })
@@ -11,11 +113,16 @@ export const fetchBasicInformation = (fId) => async (dispatch) => {
     type: "FETCH_BASIC_INFO_REQUEST",
   })
   try {
-    const response = await FormsAPI.get("/group1",{params:{
-      fId
-    }})
-    let formInitVals = formInit() 
-    dispatch({ type: "FETCH_BASIC_INFO_SUCCESS", payload: {...formInitVals,...response.data} })
+    const response = await FormsAPI.get("/group1", {
+      params: {
+        fId,
+      },
+    })
+    let formInitVals = formInit()
+    dispatch({
+      type: "FETCH_BASIC_INFO_SUCCESS",
+      payload: { ...formInitVals, ...response.data },
+    })
   } catch (error) {
     console.log(error.response)
     dispatch({
@@ -69,42 +176,6 @@ export const fetchMonthForms = (year, month) => async (dispatch) => {
   try {
     const response = await FormsAPI.get(`/${year}/${month}`)
     dispatch({ type: "FETCH_MONTH_FORMS_SUCCESS", payload: response.data })
-    if (!response.data[0]) {
-      dispatch({
-        type: "POST_FORM_REQUEST",
-      })
-      try {
-        const response1 = await FormAPI.post("/", {
-          year,
-          month,
-          day: 1,
-          placement: 1,
-          eId: 2,
-          shift: "AM",
-        })
-        dispatch({ type: "POST_FORM_SUCCESS", payload: response1.data })
-        dispatch({
-          type: "APPEND_FORM",
-          payload: {
-            fId: response1.data.insertId,
-            placement: 1,
-            eId: 2,
-            shift: "AM",
-            date: new Date(`${year}-${month}-1`),
-            attendance_form_fId: null,
-            expense_form_fId: null,
-            drop_form_fId: null,
-            advance_reading_form_fId: null,
-            dipstick_reading_form_fId: null,
-          },
-        })
-      } catch (error) {
-        dispatch({
-          type: "POST_FORM_FAILURE",
-          payload: error.response,
-        })
-      }
-    }
   } catch (error) {
     console.log(error.response)
     dispatch({
@@ -174,7 +245,6 @@ export const postFormRequest = (
   eId,
   shift
 ) => async (dispatch) => {
-  let firstResponse = {}
   dispatch({
     type: "POST_FORM_REQUEST",
   })

@@ -1,16 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
-import { connect } from 'react-redux'
-import { changeActivePanel } from '../../actions/index'
-import PanelFields from '../pages/ShiftForm/PanelFields'
-import { Field, FieldArray } from 'redux-form'
-import renderTextField from './renderTextField'
+import React from "react"
+import PropTypes from "prop-types"
+import { makeStyles } from "@material-ui/core/styles"
+import Tabs from "@material-ui/core/Tabs"
+import Tab from "@material-ui/core/Tab"
+import Typography from "@material-ui/core/Typography"
+import Grid from "@material-ui/core/Grid"
+import Box from "@material-ui/core/Box"
+import { connect } from "react-redux"
+import { changeActivePanel } from "../../actions/index"
+import PanelFields from "../pages/ShiftForm/PanelFields"
+import { Field, FieldArray } from "redux-form"
+import renderTextField from "./renderTextField"
+import nextId from "react-id-generator"
 function TabPanel(props) {
   const { children, value, index, ...other } = props
   return (
@@ -38,7 +39,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `vertical-tab-${index}`,
-    'aria-controls': `vertical-tabpanel-${index}`,
+    "aria-controls": `vertical-tabpanel-${index}`,
   }
 }
 
@@ -47,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 3,
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    display: 'flex',
+    display: "flex",
     height: 180,
   },
   tabs: {
@@ -66,12 +67,14 @@ const useStyles = makeStyles((theme) => ({
 function PumpTab(props) {
   const { pumpTabLabel, pumpNum, activePanel, changeActivePanel } = props
   const classes = useStyles()
-  const labels = ['Diesel', 'Accelrate', 'JxPremium']
+  const labels = ["Diesel", "Accelrate", "JxPremium"]
   const handleChange = (event, newValue) => {
     changeActivePanel(pumpNum - 1, newValue)
   }
-  const prefixes = ['END', 'CAL', 'MGN']
-  const products = ['Diesel', 'Accelrate', 'JxPremium']
+  let prefixes = ["END", "CAL", "MGN"]
+  let products = ["Diesel", "Accelrate", "JxPremium"]
+  if (pumpNum === "2" || pumpNum === "4")
+    products = ["JxPremium", "Accelrate", "Diesel"]
   return (
     <Grid item container md>
       <div className={classes.root}>
@@ -83,9 +86,9 @@ function PumpTab(props) {
             onChange={handleChange}
             aria-label='Vertical tabs example'
             className={classes.tabs}>
-            <Tab label='Diesel' {...a11yProps(0)} />
-            <Tab label='Accelrate' {...a11yProps(1)} />
-            <Tab label='Jx Premium' {...a11yProps(2)} />
+            {products.map((label, index) => (
+              <Tab key={nextId()} label={label} {...a11yProps(index)} />
+            ))}
           </Tabs>
         </Grid>
         {/* Right */}

@@ -26,7 +26,6 @@ export const DipstickReadingForm = ({
   submitting,
 }) => {
   const history = useHistory()
-  if (!openedForm.date) history.push("/addreport")
   return (
     <form onSubmit={handleSubmit}>
       <FormCard title='Dipstick Reading'>
@@ -59,7 +58,7 @@ const mapStateToProps = (state) => {
   return {
     openedForm: state.openedForm,
     monthForms: state.monthForms,
-    initialValues: state.formBasicInformation.results
+    initialValues: state.formInitialValues.results,
   }
 }
 export default connect(mapStateToProps)(

@@ -10,6 +10,7 @@ import activeTabNavReducer from "../components/pages/ShiftForm/MainForm/MainTabN
 import postFormReducer from "./postFormReducer"
 import createFormDialogReducer from "./createFormDialogReducer"
 import basicInfoReducer from "../components/shared/basicInfoReducer"
+import formInitialValuesReducer from "../components/shared/formInitialValuesReducer"
 export default combineReducers({
   employees: employeesReducer,
   form: formReducer,
@@ -20,6 +21,7 @@ export default combineReducers({
   openedForm: openedFormReducer,
   activeTabNav: activeTabNavReducer,
   createFormStatus: postFormReducer,
-  createFormDialog: createFormDialogReducer 
-  ,formBasicInformation: basicInfoReducer
+  createFormDialog: createFormDialogReducer,
+  formBasicInformation: basicInfoReducer,
+  formInitialValues: formInitialValuesReducer
 })

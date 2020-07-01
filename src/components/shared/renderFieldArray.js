@@ -35,7 +35,7 @@ const renderFieldArray = ({
     )
   } else if (type === 'pumpPrices') {
     const rowNames = ['Pump 1-2', 'Pump 3-4']
-    const cells = ['diesel', 'accelrate', 'jxpremium']
+    const cells = ['diesel', 'jxpremium', 'accelrate']
     return fields.map((field, index) => (
       <TableRow>
         <TableCell component='th' scope='row'>
@@ -72,7 +72,7 @@ const renderFieldArray = ({
       </TableRow>
     ))
   } else if (type === 'dipstick') {
-    const rowNames = ['Diesel', 'Accelrate', 'Jx Premium']
+    const rowNames = ['Diesel', 'Jx Premium', 'Accelrate']
     const cells = [
       'openingLevel',
       'openingLiters',

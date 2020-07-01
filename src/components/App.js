@@ -17,18 +17,18 @@ import submitGroup5 from './shared/submitGroup5'
 
 import { ThemeProvider } from '@material-ui/core/styles'
 import theme from '../theme'
-import MainTabNav from './pages/ShiftForm/MainForm/MainTabNav/MainTabNav'
+import ShiftReport from './pages/ShiftForm/MainForm/MainTabNav/ShiftReport'
+import Report from './pages/AddShiftReport/ShiftReport/ShiftReport'
 const App = () => {
   return (
     <Router>
       <ThemeProvider theme={theme}>
-        {/* <NavBar /> */}
         <ClippedDrawer>
-          <Switch>
+          {/* <Switch>
             <Route
               path='/addreport/new'
               render={(props) => (
-                <MainTabNav
+                <ShiftReport
                   items={[
                     <Form onSubmit={submitGroup1} />,
                     <AdvanceReadingForm onSubmit={submitGroup2} />,
@@ -45,9 +45,11 @@ const App = () => {
               path='/error-page'
               render={(props) => <ErrorPage {...props} />}
             />
-          </Switch>
+          </Switch> */}
+          <Report/>
         </ClippedDrawer>
       </ThemeProvider>
+      
     </Router>
   )
 }

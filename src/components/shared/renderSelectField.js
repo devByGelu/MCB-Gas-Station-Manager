@@ -1,14 +1,14 @@
-import React from 'react'
-import { Field, FieldArray, reduxForm } from 'redux-form'
+import React from "react"
+import { Field, FieldArray, reduxForm } from "redux-form"
 import {
   FormHelperText,
   FormControl,
   InputLabel,
   Select,
   InputAdornment,
-} from '@material-ui/core'
+} from "@material-ui/core"
 
-import FieldBtn from './FieldBtn'
+import FieldBtn from "./FieldBtn"
 
 const renderFromHelper = ({ touched, error }) => {
   if (!(touched && error)) {
@@ -17,39 +17,14 @@ const renderFromHelper = ({ touched, error }) => {
     return <FormHelperText>{touched && error}</FormHelperText>
   }
 }
-const iconBtn = (fields, index) => {
-  return fields ? (
-    <InputAdornment position='start'>
-      <FieldBtn type='add' fields={fields} index={index} />
-    </InputAdornment>
-  ) : (
-    <></>
-  )
-}
 
-const renderSelectField = ({
-  input,
-  id,
-  label,
-  fields,
-  index,
-  meta: { touched, error },
-  children,
-}) => (
-  <>
-    <FormControl size='small' error={touched && error}>
-      <InputLabel htmlFor={id}>{label}</InputLabel>
-      <Select
-        native
-        {...input}
-        // variant='outlined'
-        fullWidth={true}
-         
-        startAdornment={iconBtn(fields, index)}>
-        {children}
-      </Select>
-      {/* {renderFromHelper({ touched, error })} */}
-    </FormControl>
-  </>
+const renderSelectField = ({ input, meta: { touched, error }, children, label, ...custom  }) => (
+  <FormControl fullWidth error={touched && error} size='small' margin='normal'>
+    <InputLabel id={input.name}>{label}</InputLabel>
+    <Select labelId={input.name} {...input} label={label} {...custom}>
+      {children}
+    </Select>
+    {renderFromHelper({ touched, error })}
+  </FormControl>
 )
 export default renderSelectField

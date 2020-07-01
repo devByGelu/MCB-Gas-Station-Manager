@@ -75,9 +75,8 @@ function HorizontalLinearStepper({
                     variant='outlined'
                     onClick={() => {
                       deleteForm(form.fId)
-                    }}>
-                    Delete
-                  </Button>
+                    }}>Delete</Button>
+
                 </StepContent>
               </Step>
             )

@@ -1,12 +1,10 @@
 import { SubmissionError } from 'redux-form'
 import FormsAPI from '../../apis/FormsAPI'
-import store from '../../store'
-import { fetchMonthForms, openForm } from '../../actions'
-import { openedForm } from '../../states/openedForm'
-import { monthForms } from '../../states/monthForms'
+import { updateOpenedForm } from '../../actions'
 const dateFormat = require('dateformat')
 
-const submitGroup1 = async (values) => {
+const submitGroup1 = async (values,dispatch,props) => {
+  console.log(props)
   const employees = [
     ...values.pumpAttendants.map((e) => ({ eId: e.PA, role: 'attendant' })),
     { eId: values.Cashier, role: 'cashier' },
@@ -57,12 +55,12 @@ const submitGroup1 = async (values) => {
       JxPremiumMGN: values.pump4JxPremiumMGN,
     },
   ]
-  const willCreate = openedForm.attendance_form_fId === null
+  const willCreate = props.openedForm.attendance_form_fId === null
   if (willCreate) {
-    const d = new Date(openedForm.date)
-    let fId = openedForm.fId
-    let placement = openedForm.placement
-    let shift = openedForm.shift
+    const d = new Date(props.openedForm.date)
+    let fId = props.openedForm.fId
+    let placement = props.openedForm.placement
+    let shift = props.openedForm.shift
     let date = dateFormat(d, 'isoDate')
     try {
       await FormsAPI.post('/group1', {
@@ -74,19 +72,8 @@ const submitGroup1 = async (values) => {
         pumpPrices: values.pumpPrices,
         pumpLiters,
       })
-      // Update fetchMonthForms and openedForm
-      await store.dispatch(
-        fetchMonthForms(dateFormat(d, 'yyyy'), dateFormat(d, 'm'))
-      )
-      store.dispatch(
-        openForm(
-          monthForms.results.find(
-            (form) =>
-              openedForm.date === form.date &&
-              openedForm.placement === form.placement
-          )
-        )
-      )
+      // Un-null fIds
+      dispatch(updateOpenedForm(d,placement))
     } catch (error) {
       throw new SubmissionError({_error: 'Failed to submit basic information'})
     }
@@ -94,20 +81,6 @@ const submitGroup1 = async (values) => {
     // await FormsAPI.patch
     alert('Implement edit mode')
   }
-
-  /* if (!['john', 'paul', 'george', 'ringo'].includes(values.username)) {
-      throw new SubmissionError({
-        username: 'User does not exist',
-        _error: 'Login failed!'
-      })
-    } else if (values.password !== 'redux-form') {
-      throw new SubmissionError({
-        password: 'Wrong password',
-        _error: 'Login failed!'
-      })
-    } else {
-      window.alert(`You submitted:\n\n${JSON.stringify(values, null, 2)}`)
-    } */
 }
 
 export default submitGroup1

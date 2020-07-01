@@ -17,8 +17,6 @@ import { connect } from 'react-redux'
 import { useHistory } from "react-router-dom";
 import { fetchEmployees } from '../../../../actions'
 const DropForm = ({submitting,openedForm,monthForms,handleSubmit})  => {
-  const history = useHistory()
-  if (!openedForm.date) history.push("/addreport");
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -87,7 +85,7 @@ const mapStateToProps = (state) => {
   return {
     openedForm: state.openedForm,
     monthForms: state.monthForms,
-    initialValues: state.formBasicInformation.results
+    initialValues: state.formInitialValues.results,
   }
 }
 

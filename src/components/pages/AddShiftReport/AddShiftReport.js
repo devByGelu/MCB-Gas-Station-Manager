@@ -1,5 +1,4 @@
-import React, { Component } from "react"
-
+import React, { Component } from "react" 
 import Grid from "@material-ui/core/Grid"
 import SelectedDayPanel from "../../shared/SelectedDayPanel"
 import { connect } from "react-redux"
@@ -18,7 +17,6 @@ const AddShiftReport = (props) => {
 
       <Grid item md={8}>
         <SelectedDayPanel />
-        {/* <OutlinedCard title='27th' /> */}
       </Grid>
     </Grid>
   )

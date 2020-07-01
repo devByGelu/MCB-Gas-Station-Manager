@@ -1,46 +1,32 @@
-import { SubmissionError } from 'redux-form'
-import FormsAPI from '../../apis/FormsAPI'
-import { openedForm } from '../../states/openedForm'
-import store from '../../store'
-import { fetchMonthForms, openForm } from '../../actions'
-import { monthForms } from '../../states/monthForms'
-const dateFormat = require('dateformat')
+import { SubmissionError } from "redux-form"
+import FormsAPI from "../../apis/FormsAPI"
+import { updateOpenedForm } from "../../actions"
+const dateFormat = require("dateformat")
 
-const submitGroup2 = async (values) => {
-  
-  const willCreate = openedForm.advance_reading_form_fId === null
+const submitGroup2 = async (values, dispatch, props) => {
+  const willCreate = props.openedForm.advance_reading_form_fId === null
   if (willCreate) {
-    const d = new Date(openedForm.date)
-    let fId = openedForm.fId
-    let placement = openedForm.placement
-    let date = dateFormat(d, 'isoDate')
+    const d = new Date(props.openedForm.date)
+    let fId = props.openedForm.fId
+    let placement = props.openedForm.placement
+    let date = dateFormat(d, "isoDate")
     let advanceReading = values.advanceReading
     try {
-      await FormsAPI.post('/group2', {
+      await FormsAPI.post("/group2", {
         fId,
         placement,
         date,
-        advanceReading
+        advanceReading,
       })
-      // Update fetchMonthForms and openedForm
-      await store.dispatch(
-        fetchMonthForms(dateFormat(d, 'yyyy'), dateFormat(d, 'm'))
-      )
-      store.dispatch(
-        openForm(
-          monthForms.results.find(
-            (form) =>
-              openedForm.date === form.date &&
-              openedForm.placement === form.placement
-          )
-        )
-      )
+      dispatch(updateOpenedForm(d, placement))
     } catch (error) {
-      throw new SubmissionError({_error: 'Failed to submit basic information'})
+      throw new SubmissionError({
+        _error: "Failed to submit basic information",
+      })
     }
   } else {
     // await FormsAPI.patch
-    alert('Implement edit mode')
+    alert("Implement edit mode")
   }
   // try {
   //   const advanceReading = values.advanceReading

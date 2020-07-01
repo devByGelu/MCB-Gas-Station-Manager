@@ -15,9 +15,6 @@ import {
 import { Redirect } from "react-router-dom"
 
 import Grid from "@material-ui/core/Grid"
-import renderField from "../../shared/renderField"
-// import { fetchEmployees } from '../../../actions/index'
-
 import FormHeader from "../../shared/FormHeader/FormHeader"
 import validate from "../../shared/validate"
 import renderSelectField from "../../shared/renderSelectField"
@@ -36,7 +33,6 @@ import Tab from "@material-ui/core/Tab"
 import PumpTab from "../../shared/PumpTab"
 import FormCard from "../../shared/FormCard"
 import {
-  fetchEmployees,
   fetchMonthForms,
   fetchBasicInformation,
 } from "../../../actions"
@@ -65,6 +61,7 @@ export const Form = (props) => {
     formBasicInformation,
     monthForms,
     fetchBasicInformation,
+    employees
   } = props
   const history = useHistory()
   const classes = useStyles()
@@ -74,167 +71,131 @@ export const Form = (props) => {
     { label: "PUMP 3", number: "3" },
     { label: "PUMP 4", number: "4" },
   ]
-  useEffect(() => {
-    if (openedForm.attendance_form_fId !== null && openedForm.attendance_form_fId) {
-      fetchBasicInformation(openedForm.fId)
-      alert("fetching basic info")
-    }
-  }, [openedForm.attendance_form_fId,openedForm])
 
-  useEffect(() => {
-    if (props.employees === undefined || props.employees.results === null)
-      props.fetchEmployees()
-  }, [])
+  return (
+    <React.Fragment>
+      <form onSubmit={handleSubmit}>
+        <Grid container direction='row' spacing={2} justify='center'>
+          <Grid item md={8}>
+            <FormCard title='Prices'>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align='left'></TableCell>
+                    <TableCell align='left'>Diesel(PHP)</TableCell>
+                    <TableCell align='left'>Jx Premium(PHP)</TableCell>
+                    <TableCell align='left'>Accelrate(PHP)</TableCell>
+                  </TableRow>
+                </TableHead>
 
-  if (!openedForm.date) history.push("/addreport")
-  if (
-    props.employees === undefined ||
-    props.employees.results === null ||
-    props.employees.loading
-  ) {
-    return (
-      <Skeleton animation='wave' style={{ width: "100%", height: "100%" }} />
-    )
-  } else if (props.employees.error) {
-    return (
-      <Redirect
-        to={{
-          pathname: "/error-page",
-          state: {
-            status: props.employees.error.status,
-            data: props.employees.error.data,
-          },
-        }}
-      />
-    )
-  } else {
-    const isSettled = openedForm.attendance_form_fId !== null
-    return (
-      <React.Fragment>
-        <form onSubmit={handleSubmit}>
-          <Grid container direction='row' spacing={2} justify='center'>
-            <Grid item md={8}>
-              <FormCard title='Prices'>
-                <Table className={classes.table}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align='left'></TableCell>
-                      <TableCell align='left'>Diesel(PHP)</TableCell>
-                      <TableCell align='left'>Accelrate(PHP)</TableCell>
-                      <TableCell align='left'>Jx Premium(PHP)</TableCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    <FieldArray
-                      name='pumpPrices'
-                      component={renderFieldArray}
-                      type='pumpPrices'
-                    />
-                  </TableBody>
-                </Table>
-              </FormCard>
-            </Grid>
-            <Grid item md={4}>
-              <Grid container item direction='row' spacing={2} justify='center'>
-                <Grid container item direction='row' justify='center'>
-                  <FormCard title='Cashier'>
-                    <Grid item md={12}>
-                      <Field
-                        name='Cashier'
-                        // label='Cashier'
-                        id='Cashier'
-                        component={renderSelectField}>
-                        <SelectOptionsMapper
-                          items={props.employees.results.map(
-                            (employee) => employee.eFN + " " + employee.eLN
-                          )}
-                          values={props.employees.results.map(
-                            (employee) => employee.eId
-                          )}
-                        />
-                      </Field>
-                    </Grid>
-                  </FormCard>
-                </Grid>
-
-                <Grid item md={12}>
-                  <Grid item container direction='row' justify='center'>
-                    <FormCard title='Pump Attendants'>
-                      <FieldArray
-                        name='pumpAttendants'
-                        component={renderFieldArray}
-                        items={props.employees.results.map(
+                <TableBody>
+                  <FieldArray
+                    name='pumpPrices'
+                    component={renderFieldArray}
+                    type='pumpPrices'
+                  />
+                </TableBody>
+              </Table>
+            </FormCard>
+          </Grid>
+          <Grid item md={4}>
+            <Grid container item direction='row' spacing={2} justify='center'>
+              <Grid container item direction='row' justify='center'>
+                <FormCard title='Cashier'>
+                  <Grid item md={12}>
+                    <Field
+                      name='Cashier'
+                      // label='Cashier'
+                      id='Cashier'
+                      component={renderSelectField}>
+                      <SelectOptionsMapper
+                        items={employees.results.map(
                           (employee) => employee.eFN + " " + employee.eLN
                         )}
-                        values={props.employees.results.map(
+                        values={employees.results.map(
                           (employee) => employee.eId
                         )}
-                        type='pumpAttendants'
                       />
-                    </FormCard>
+                    </Field>
                   </Grid>
+                </FormCard>
+              </Grid>
+
+              <Grid item md={12}>
+                <Grid item container direction='row' justify='center'>
+                  <FormCard title='Pump Attendants'>
+                    <FieldArray
+                      name='pumpAttendants'
+                      component={renderFieldArray}
+                      items={employees.results.map(
+                        (employee) => employee.eFN + " " + employee.eLN
+                      )}
+                      values={employees.results.map(
+                        (employee) => employee.eId
+                      )}
+                      type='pumpAttendants'
+                    />
+                  </FormCard>
                 </Grid>
               </Grid>
             </Grid>
-
-            <Grid item md={12}>
-              <FormCard title='Pump Summary'>
-                <Grid item container direction='row'>
-                  <Grid item md={6}>
-                    <PumpTab
-                      pumpTabLabel={pumps[0].label}
-                      pumpNum={pumps[0].number}
-                    />
-                  </Grid>
-                  <Grid item md={6}>
-                    <PumpTab
-                      pumpTabLabel={pumps[1].label}
-                      pumpNum={pumps[1].number}
-                    />
-                  </Grid>
-                  <Grid item md={6}>
-                    <PumpTab
-                      pumpTabLabel={pumps[2].label}
-                      pumpNum={pumps[2].number}
-                    />
-                  </Grid>
-                  <Grid item md={6}>
-                    <PumpTab
-                      pumpTabLabel={pumps[3].label}
-                      pumpNum={pumps[3].number}
-                    />
-                  </Grid>
-                </Grid>
-              </FormCard>
-            </Grid>
           </Grid>
-          <SubmitButton
-            editMode={openedForm.attendance_form_fId !== null}
-            submitting={submitting}
-          />
-        </form>
-      </React.Fragment>
-    )
-  }
+
+          <Grid item md={12}>
+            <FormCard title='Pump Summary'>
+              <Grid item container direction='row'>
+                <Grid item md={6}>
+                  pump 1
+                  <PumpTab
+                    pumpTabLabel={pumps[0].label}
+                    pumpNum={pumps[0].number}
+                  />
+                </Grid>
+                <Grid item md={6}>
+                  pump2
+                  <PumpTab
+                    pumpTabLabel={pumps[1].label}
+                    pumpNum={pumps[1].number}
+                  />
+                </Grid>
+                <Grid item md={6}>
+                  pump 3
+                  <PumpTab
+                    pumpTabLabel={pumps[2].label}
+                    pumpNum={pumps[2].number}
+                  />
+                </Grid>
+                <Grid item md={6}>
+                  pump 4
+                  <PumpTab
+                    pumpTabLabel={pumps[3].label}
+                    pumpNum={pumps[3].number}
+                  />
+                </Grid>
+              </Grid>
+            </FormCard>
+          </Grid>
+        </Grid>
+        <SubmitButton
+          editMode={openedForm.attendance_form_fId !== null}
+          submitting={submitting}
+        />
+      </form>
+    </React.Fragment>
+  )
 }
 
 const mapStateToProps = (state) => {
   return {
-    submitFailed: hasSubmitFailed("shiftForm")(state),
-    formSyncErrors: getFormSyncErrors("shiftForm")(state),
     employees: state.employees,
     openedForm: state.openedForm,
     monthForms: state.monthForms,
-    initialValues: state.formBasicInformation.results,
-    formBasicInformation: state.formBasicInformation
-    
+    initialValues: state.formInitialValues.results,
   }
 }
 // Returns appropriate submit handler
 
 export default connect(mapStateToProps, {
-  fetchEmployees,
   fetchMonthForms,
   fetchBasicInformation,
 })(

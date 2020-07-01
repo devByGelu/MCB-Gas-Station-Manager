@@ -1,36 +1,23 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import TextField from '@material-ui/core/TextField'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import FormControl from '@material-ui/core/FormControl'
-import FieldBtn from './FieldBtn'
+import React from "react"
+import PropTypes from "prop-types"
+import TextField from "@material-ui/core/TextField"
+import InputAdornment from "@material-ui/core/InputAdornment"
+import FormControl from "@material-ui/core/FormControl"
+import FieldBtn from "./FieldBtn"
 const iconBtn = (fields, index) => {
   return fields ? <FieldBtn type='add' fields={fields} index={index} /> : <></>
 }
 const renderTextField = ({
-  label,
-  placeholder, 
-  fields,
-  index,
-  type,
   input,
-  helperText,
+  label,
   meta: { touched, invalid, error },
   ...custom
 }) => (
-  <FormControl size='small'>
+  <FormControl size='small' fullWidth margin='normal'>
     <TextField
-      type={type}
       label={label}
-      size='small'
-      InputProps={{
-        startAdornment: iconBtn(fields, index),
-      }}
-      // variant='outlined'
-      placeholder={placeholder}
-      startAdornment={iconBtn(fields, index)}
       error={touched && invalid}
-      // helperText={touched && error ? error : helperText ? helperText : ''}
+      helperText={touched && error}
       {...input}
       {...custom}
     />

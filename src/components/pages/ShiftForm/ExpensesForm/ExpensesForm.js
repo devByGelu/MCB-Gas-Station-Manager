@@ -25,32 +25,6 @@ const ExpensesForm = (props) => {
     employees,
     fetchEmployees,
   } = props
-  const history = useHistory()
-  useEffect(() => {
-    if (employees === undefined || employees.results === null) fetchEmployees()
-  }, [])
-  if (!openedForm.date) history.push("/addreport")
-  if (
-    employees === undefined ||
-    employees.results === null ||
-    employees.loading
-  ) {
-    return (
-      <Skeleton animation='wave' style={{ width: "100%", height: "100%" }} />
-    )
-  } else if (employees.error) {
-    return (
-      <Redirect
-        to={{
-          pathname: "/error-page",
-          state: {
-            status: employees.error.status,
-            data: employees.error.data,
-          },
-        }}
-      />
-    )
-  } else
     return (
       <form onSubmit={handleSubmit}>
         <Grid
@@ -129,17 +103,11 @@ const mapStateToProps = (state) => {
     employees: state.employees,
     openedForm: state.openedForm,
     monthForms: state.monthForms,
-    initialValues: state.formBasicInformation.results
-  }
-}
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchEmployees: () => dispatch(fetchEmployees()),
+    initialValues: state.formInitialValues.results,
   }
 }
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
 )(
   reduxForm({
     form: "shiftForm", // <------ same form name
