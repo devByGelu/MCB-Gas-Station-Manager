@@ -1,54 +1,78 @@
-import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
-import Table from "@material-ui/core/Table"
-import TableBody from "@material-ui/core/TableBody"
-import TableCell from "@material-ui/core/TableCell"
-import TableContainer from "@material-ui/core/TableContainer"
-import TableHead from "@material-ui/core/TableHead"
-import TableRow from "@material-ui/core/TableRow"
-import Paper from "@material-ui/core/Paper"
-import { TextField } from "@material-ui/core"
-import nextId from "react-id-generator"
-import { FieldArray, reduxForm, Field } from "redux-form"
-import { connect } from "react-redux"
-import renderTextField from "../../../shared/renderTextField"
-import FormCard from "./FormCard"
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
+import { TextField } from '@material-ui/core'
+import nextId from 'react-id-generator'
+import { FieldArray, reduxForm, Field } from 'redux-form'
+import { connect } from 'react-redux'
+import renderTextField from '../../../shared/renderTextField'
+import FormCard from './FormCard'
 
 const useStyles = makeStyles({
   table: {
     maxWidth: 1100,
-    fontSize: 3
+    fontSize: 3,
   },
   tableText: {
     fontSize: 12,
   },
+  resize: {
+    fontSize: 10,
+  },
 })
-function PumpInfo({number}) {
+function PumpInfo({ number }) {
   const classes = useStyles()
   function createData(pName) {
-    return {
-      pName,
-      advRd: <Field variant='outlined' name={`pump${number}.${pName}.advRd`} component={renderTextField} />,
-      end: <Field variant='outlined' name={`pump${number}.${pName}.end`} component={renderTextField} />,
-      beg: <Field variant='outlined' name={`pump${number}.${pName}.beg`} component={renderTextField} />,
-      cal: <Field variant='outlined' name={`pump${number}.${pName}.cal`} component={renderTextField} />,
-      mgn: <Field variant='outlined' name={`pump${number}.${pName}.mgn`} component={renderTextField} />,
-      lSold: <Field variant='outlined' name={`pump${number}.${pName}.lSold`} component={renderTextField} />,
-      cLSold: <Field variant='outlined' name={`pump${number}.${pName}.cLSold`} component={renderTextField} />,
-      sales: <Field variant='outlined' name={`pump${number}.${pName}.sales`} component={renderTextField} />,
-      income: <Field variant='outlined' name={`pump${number}.${pName}.income`} component={renderTextField} />,
-    }
+    const fields = [
+      'advRd',
+      'end',
+      'beg',
+      'cal',
+      'mgn',
+      'lSold',
+      'cLSold',
+      'sales',
+      'income',
+    ]
+    let data = {}
+    data.pName = pName
+    fields.forEach(
+      (f) =>
+        (data[f] = (
+          <Field
+            inputProps={{ style: { fontSize: 11 } }}
+            // InputLabelProps={{ style: { fontSize: 40 } }}
+            name={`pump${number}.${pName}.${f}`}
+            component={renderTextField}
+          />
+        ))
+    )
+    return data
   }
-  const rows = [createData("diesel"),createData("jxpremium"),createData("accelrate")]
+  let rows = [
+    createData('diesel'),
+    createData('accelrate'),
+    createData('jxpremium'),
+  ]
+  if (number == 2 || number == 4)
+    rows = [
+      createData('jxpremium'),
+      createData('accelrate'),
+      createData('diesel'),
+    ]
   return (
-    <FormCard title='Pump1' key={nextId()}>
-      <Table
-         className={classes.table}
-        size='small'>
+    <FormCard title={`Pump ${number}`} key={nextId()} >
+      <Table className={classes.table} size='small'>
         <TableHead>
           <TableRow>
             <TableCell>PRODUCT</TableCell>
-            <TableCell align='right'>ADV RDNG</TableCell>
+            <TableCell  align='right'>ADV RDNG</TableCell>
             <TableCell align='right'>END</TableCell>
             <TableCell align='right'>BEG</TableCell>
             <TableCell align='right'>CAL</TableCell>
@@ -66,8 +90,14 @@ function PumpInfo({number}) {
                 {row.pName}
               </TableCell>
               <TableCell align='right'>{row.advRd}</TableCell>
-               <TableCell align='right'>{row.end}</TableCell>
-               <TableCell align='right'>{row.beg}</TableCell>
+              <TableCell align='right'>{row.end}</TableCell>
+              <TableCell align='right'>{row.beg}</TableCell>
+              <TableCell align='right'>{row.cal}</TableCell>
+              <TableCell align='right'>{row.mgn}</TableCell>
+              <TableCell align='right'>{row.lSold}</TableCell>
+              <TableCell align='right'>{row.cLSold}</TableCell>
+              <TableCell align='right'>{row.sales}</TableCell>
+              <TableCell align='right'>{row.income}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -81,6 +111,6 @@ export default connect(
   null
 )(
   reduxForm({
-    form: "shiftForm",
+    form: 'shiftForm',
   })(PumpInfo)
 )

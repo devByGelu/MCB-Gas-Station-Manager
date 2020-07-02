@@ -14,9 +14,21 @@ const theme = createMuiTheme({
       main: red.A400,
     },
     background: {
-      default: ' linear-gradient(90deg, #ff9100 100%, #ef6c00 0%)  ',
+      default: 'linear-gradient(90deg, #ff9100 100%, #ef6c00 0%)',
     },
   },
+  typography: {
+    fontSize: 12,
+  },
+  // overrides: {
+  //   MuiTableCell: {
+  //     root: {
+  //       //This can be referred from Material UI API documentation.
+  //       paddingBotton: 3000,
+  //       backgroundColor: '#eaeaea',
+  //     },
+  //   },
+  // },
 })
 
 export default theme

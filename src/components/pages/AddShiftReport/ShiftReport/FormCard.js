@@ -10,7 +10,6 @@ import List from "@material-ui/core/List"
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // maxWidth: 300,
   },
   scroll: {
     overflow: "auto",

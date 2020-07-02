@@ -13,7 +13,7 @@ const renderTextField = ({
   meta: { touched, invalid, error },
   ...custom
 }) => (
-  <FormControl size='small' fullWidth margin='normal'>
+  <FormControl size='small' fullWidth margin='dense'>
     <TextField
       label={label}
       error={touched && invalid}

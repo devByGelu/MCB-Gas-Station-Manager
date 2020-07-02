@@ -32,7 +32,7 @@ const BasicInformationPanel = () => {
         alignItems='flex-start'
         md={12}
         justify='center'
-        spacing={3}>
+        spacing={31}>
         <Grid item md={6}>
           <Field
             name='shiftDate'
