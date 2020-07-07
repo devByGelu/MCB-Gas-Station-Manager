@@ -1,66 +1,84 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import FormCard from "./FormCard"
-import { Field, FieldArray, reduxForm } from "redux-form"
-import { MenuItem, Grid, List, ListItem, Paper } from "@material-ui/core"
-import renderSelectField from "../../../shared/renderSelectField"
-import renderTextField from "../../../shared/renderTextField"
-import nextId from "react-id-generator"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import IconButton from "@material-ui/core/IconButton"
-import AddOutlinedIcon from "@material-ui/icons/AddOutlined"
-import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined"
-const renderPumpAttendants = ({ fields, meta: { error, submitFailed } }) => (
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import FormCard from "./FormCard";
+import { Field, FieldArray, reduxForm } from "redux-form";
+import { MenuItem, Grid, List, ListItem, Paper } from "@material-ui/core";
+import renderSelectField from "../../../shared/renderSelectField";
+import renderTextField from "../../../shared/renderTextField";
+import nextId from "react-id-generator";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
+import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
+const renderEmployees = (employees) => <></>;
+const renderPumpAttendants = ({
+  employees,
+  fields,
+  meta: { error, submitFailed },
+}) => (
   <>
     {fields.map((field, index) => (
-      <Grid item md={12} key={nextId()}>
+      <Grid item md={12} key={index}>
         <Field
-          key={nextId()}
           name={field}
           label={"Attendant " + (index + 1)}
-          component={renderSelectField}></Field>
+          component={renderSelectField}
+        >
+          {employees.map((emp, index) => (
+            <MenuItem key={emp.eId} value={emp.eId}>
+              {emp.nickName}
+            </MenuItem>
+          ))}
+        </Field>
       </Grid>
     ))}
   </>
-)
-const BasicInformationPanel = () => {
+);
+const BasicInformationPanel = ({ employees }) => {
   return (
-    <FormCard title='Basic Information'>
+    <FormCard title="Basic Information">
       <Grid
         item
         container
-        alignItems='flex-start'
+        alignItems="flex-start"
         md={12}
-        justify='center'
-        spacing={31}>
+        justify="center"
+        spacing={3}
+      >
         <Grid item md={6}>
           <Field
-            name='shiftDate'
-            label='Date'
-            placeholder='Date'
-            type='date'
+            name="shiftDate"
+            label="Date"
+            placeholder="Date"
+            type="date"
             component={renderTextField}
           />
-          <Field name='shift' label='Shift'  component={renderSelectField}>
+          <Field name="shift" label="Shift" component={renderSelectField}>
             <MenuItem value={"AM"}>AM</MenuItem>
             <MenuItem value={"PM"}>PM</MenuItem>
           </Field>
-          <Field
-            name='cashier'
-            label='Cashier'
-            component={renderSelectField}></Field>
+          <Field name="cashier" label="Cashier" component={renderSelectField}>
+            <MenuItem value={null}>None</MenuItem>
+            {employees.map((emp, index) => (
+              <MenuItem key={emp.eId} value={emp.eId}>{emp.nickName}</MenuItem>
+            ))}
+          </Field>
         </Grid>
         <Grid item md={6} style={{ marginTop: 3 }}>
-          <FieldArray name='pumpAttendants' component={renderPumpAttendants} />
+          <FieldArray
+            name="pumpAttendants"
+            employees={employees}
+            component={renderPumpAttendants}
+          />
         </Grid>
       </Grid>
     </FormCard>
-  )
-}
+  );
+};
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({});
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {};
 
 export default connect(
   null,
@@ -70,6 +88,9 @@ export default connect(
     form: "shiftForm",
     initialValues: {
       pumpAttendants: [{}, {}, {}],
+      expenses: [{}],
+      cashadvance: [{}],
+      creditsales: [{}],
     },
   })(BasicInformationPanel)
-)
+);

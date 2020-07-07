@@ -1,16 +1,15 @@
-import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
-import Card from "@material-ui/core/Card"
-import CardHeader from "@material-ui/core/CardHeader"
-import CardContent from "@material-ui/core/CardContent"
-import CardActions from "@material-ui/core/CardActions"
-import { red, lightBlue } from "@material-ui/core/colors"
-import { Typography, ListItem } from "@material-ui/core"
-import List from "@material-ui/core/List"
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import { red, lightBlue } from "@material-ui/core/colors";
+import { Typography, ListItem } from "@material-ui/core";
+import List from "@material-ui/core/List";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-  },
+  root: {},
   scroll: {
     overflow: "auto",
     maxHeight: 120,
@@ -44,23 +43,23 @@ const useStyles = makeStyles((theme) => ({
     overflow: "autoStyle",
     maxHeight: 300,
   },
-}))
+}));
 
 export default function FormCard(props) {
-  const { title, children, width } = props
-  const classes = useStyles()
+  const { title, children, width = 2000 } = props;
+  const classes = useStyles();
   return (
-    <Card className={classes.root}>
+    <Card style={{ maxWidth: width }}>
       <CardHeader
         className={classes.cardHeaderTab}
         title={
-          <Typography variant='overline' style={{ color: "white" }}>
+          <Typography variant="overline" style={{ color: "white" }}>
             {title}
           </Typography>
         }
       />
 
-      <CardContent >{children}</CardContent>
+      <CardContent>{children}</CardContent>
     </Card>
-  )
+  );
 }

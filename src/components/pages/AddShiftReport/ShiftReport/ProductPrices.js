@@ -7,7 +7,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { TextField } from "@material-ui/core";
+import { TextField, Grid } from "@material-ui/core";
 import nextId from "react-id-generator";
 import { FieldArray, reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
@@ -16,7 +16,6 @@ import FormCard from "./FormCard";
 
 const useStyles = makeStyles({
   table: {
-    maxWidth: 1100,
     fontSize: 3,
   },
   tableText: {
@@ -26,52 +25,47 @@ const useStyles = makeStyles({
     fontSize: 10,
   },
 });
-function DipstickReading({ number }) {
+function ProductPrices() {
   const classes = useStyles();
-  function createData(pName) {
-    const fields = ["oLvl", "oLit", "cLvl", "cLit"];
+  function createData(groupNum) {
+    const fields = ["diesel", "jxpremium", "accelrate"];
     let data = {};
-    data.pName = pName;
     fields.forEach(
       (f) =>
         (data[f] = (
           <Field
-            inputProps={{ style: { fontSize: 11 } }}
-            // InputLabelProps={{ style: { fontSize: 40 } }}
-            name={`${pName}.${f}`}
+            inputProps={{ min: 0, style: { textAlign: "center" } }}
+            name={`${groupNum}.${f}`}
+            variant="outlined"
             component={renderTextField}
           />
         ))
     );
     return data;
   }
-  let rows = [
-    createData("diesel"),
-    createData("jxpremium"),
-    createData("accelrate"),
-  ];
+  let rows = [createData("group1"), createData("group2")];
   return (
-    <FormCard title={`Pump ${number}`} key={nextId()}>
-      <Table className={classes.table} size="small">
+    <FormCard title={`Price`}>
+      <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>PRODUCT</TableCell>
-            <TableCell align="right">Opening Level</TableCell>
-            <TableCell align="right">Opening Liters</TableCell>
-            <TableCell align="right">Closing Level</TableCell>
-            <TableCell align="right">Closing Liters</TableCell>
+            <TableCell align="center">Diesel</TableCell>
+            <TableCell align="center">JxPremium</TableCell>
+            <TableCell align="center">Accelrate</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.pName}
+          {rows.map((row, index) => (
+            <TableRow key={index}>
+              <TableCell width="15%" align="right">
+                {row.diesel}
               </TableCell>
-              <TableCell align="right">{row.oLvl}</TableCell>
-              <TableCell align="right">{row.oLit}</TableCell>
-              <TableCell align="right">{row.cLvl}</TableCell>
-              <TableCell align="right">{row.cLit}</TableCell>
+              <TableCell width="15%" align="right">
+                {row.jxpremium}
+              </TableCell>
+              <TableCell width="15%" align="right">
+                {row.accelrate}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -86,5 +80,5 @@ export default connect(
 )(
   reduxForm({
     form: "shiftForm",
-  })(DipstickReading)
+  })(ProductPrices)
 );

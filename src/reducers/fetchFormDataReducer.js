@@ -1,25 +1,25 @@
 const initialState = {
-  error: null,
+  error: undefined,
   loading: false,
-  results: null,
+  results: undefined,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case "POST_FORM_REQUEST":
+    case "FETCH_FORM_DATA_REQUEST":
       return {
         ...state,
-        error: null,
+        error: undefined,
         loading: true,
       };
-    case "POST_FORM_SUCCESS":
+    case "FETCH_FORM_DATA_SUCCESS":
       return {
         ...state,
         loading: false,
         results: action.payload,
       };
 
-    case "POST_FORM_FAILURE":
+    case "FETCH_FORM_DATA_FAILURE":
       return {
         ...state,
         loading: false,

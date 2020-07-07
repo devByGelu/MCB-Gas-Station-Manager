@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -7,15 +7,15 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { TextField } from "@material-ui/core";
+import { TextField, Grid } from "@material-ui/core";
 import nextId from "react-id-generator";
 import { FieldArray, reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
+
 const useStyles = makeStyles({
   table: {
-    maxWidth: 2000,
     fontSize: 3,
   },
   tableText: {
@@ -25,19 +25,14 @@ const useStyles = makeStyles({
     fontSize: 10,
   },
 });
-function PumpInfo({ number }) {
+function Dipstick({ number }) {
   const classes = useStyles();
   function createData(pName) {
     const fields = [
-      "advRd",
-      "end",
-      "beg",
-      "cal",
-      "mgn",
-      "lSold",
-      "cLSold",
-      "sales",
-      "income",
+      "openingLiters",
+      "openingLevel",
+      "closingLevel",
+      "closingLiters",
     ];
     let data = {};
     data.pName = pName;
@@ -45,8 +40,8 @@ function PumpInfo({ number }) {
       (f) =>
         (data[f] = (
           <Field
+            name={`${pName}.${f}`}
             variant="outlined"
-            name={`pump${number}.${pName}.${f}`}
             component={renderTextField}
           />
         ))
@@ -55,30 +50,19 @@ function PumpInfo({ number }) {
   }
   let rows = [
     createData("diesel"),
-    createData("accelrate"),
     createData("jxpremium"),
+    createData("accelrate"),
   ];
-  if (number == 2 || number == 4)
-    rows = [
-      createData("jxpremium"),
-      createData("accelrate"),
-      createData("diesel"),
-    ];
   return (
-    <FormCard title={`Pump ${number}`}>
+    <FormCard title={`Dipstick Reading`}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
             <TableCell>PRODUCT</TableCell>
-            <TableCell align="right">ADV RDNG</TableCell>
-            <TableCell align="right">END</TableCell>
-            <TableCell align="right">BEG</TableCell>
-            <TableCell align="right">CAL</TableCell>
-            <TableCell align="right">MGN</TableCell>
-            <TableCell align="right">L SOLD</TableCell>
-            <TableCell align="right">CAL L SOLD</TableCell>
-            <TableCell align="right">SALES</TableCell>
-            <TableCell align="right">INCOME</TableCell>
+            <TableCell align="right">Opening Level</TableCell>
+            <TableCell align="right">Opening Liters</TableCell>
+            <TableCell align="right">Closing Level</TableCell>
+            <TableCell align="right">Closing Liters</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -87,19 +71,14 @@ function PumpInfo({ number }) {
               <TableCell component="th" scope="row">
                 {row.pName}
               </TableCell>
-              <TableCell align="right">{row.advRd}</TableCell>
-              <TableCell align="right">{row.end}</TableCell>
-              <TableCell align="right">{row.beg}</TableCell>
-              <TableCell width="7%" align="right">
-                {row.cal}
+              <TableCell width="15%" align="right">
+                {row.openingLevel}
               </TableCell>
-              <TableCell width="7%" align="right">
-                {row.mgn}
+              <TableCell align="right">{row.openingLiters}</TableCell>
+              <TableCell width="15%" align="right">
+                {row.closingLevel}
               </TableCell>
-              <TableCell align="right">{row.lSold}</TableCell>
-              <TableCell align="right">{row.cLSold}</TableCell>
-              <TableCell align="right">{row.sales}</TableCell>
-              <TableCell align="right">{row.income}</TableCell>
+              <TableCell align="right">{row.closingLiters}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -114,5 +93,5 @@ export default connect(
 )(
   reduxForm({
     form: "shiftForm",
-  })(PumpInfo)
+  })(Dipstick)
 );
