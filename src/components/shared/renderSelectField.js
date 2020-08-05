@@ -18,10 +18,10 @@ const renderFromHelper = ({ touched, error }) => {
   }
 }
 
-const renderSelectField = ({ input, meta: { touched, error }, children, label, ...custom  }) => (
-  <FormControl fullWidth error={touched && error} size='small' margin='dense'>
-    <InputLabel id={input.name}>{label}</InputLabel>
-    <Select labelId={input.name} {...input} label={label} {...custom}>
+const renderSelectField = ({size='small', input, meta: { touched, error }, children, label, ...custom  }) => (
+  <FormControl fullWidth error={touched && error} size={size} margin='dense'>
+    <InputLabel id={input.name+'-label'}>{label}</InputLabel>
+    <Select labelId={input.name+'-label'} id={input.name+"-id"} {...input}  label={label} {...custom}>
       {children}
     </Select>
     {renderFromHelper({ touched, error })}

@@ -13,11 +13,15 @@ import { FieldArray, reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
+import { createNumberMask } from "redux-form-input-masks";
 
+const currencyMask = createNumberMask({
+  prefix: "PHP",
+  decimalPlaces: 2,
+  allowNegative: false,
+});
 const useStyles = makeStyles({
-  table: {
-    fontSize: 3,
-  },
+  table: { fontSize: 3 },
   tableText: {
     fontSize: 12,
   },
@@ -25,7 +29,7 @@ const useStyles = makeStyles({
     fontSize: 10,
   },
 });
-function Drop({ number }) {
+function Drop({ isFieldDisabled, number }) {
   const classes = useStyles();
   function createData(label, field) {
     return { label, field };
@@ -37,7 +41,12 @@ function Drop({ number }) {
       <Field
         name={`dropForm.drops`}
         variant="outlined"
+        type="tel"
+        disabled={isFieldDisabled}
         component={renderTextField}
+        {...createNumberMask({
+          allowNegative: false,
+        })}
       />
     ),
     createData(
@@ -45,8 +54,10 @@ function Drop({ number }) {
 
       <Field
         name={`dropForm.amtPerDrop`}
+        disabled={isFieldDisabled}
         variant="outlined"
         component={renderTextField}
+        {...currencyMask}
       />
     ),
     createData(
@@ -54,24 +65,25 @@ function Drop({ number }) {
 
       <Field
         name={`dropForm.lastDrop`}
+        disabled={isFieldDisabled}
         variant="outlined"
         component={renderTextField}
+        {...currencyMask}
       />
     ),
   ];
   return (
-    <FormCard title={`Drop Form`} >
+    <FormCard title={`Drop Form`}>
       <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-        </TableHead>
+        <TableHead></TableHead>
         <TableBody>
-          {rows.map((row,index) => (
+          {rows.map((row, index) => (
             <TableRow key={index}>
-              <TableCell width={row.label=='drops' ? '10%':''} component="th" scope="row">
+              <TableCell
+                width={row.label == "drops" ? "10%" : ""}
+                component="th"
+                scope="row"
+              >
                 {row.label}
               </TableCell>
               <TableCell align="right">{row.field}</TableCell>

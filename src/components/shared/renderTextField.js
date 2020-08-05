@@ -5,6 +5,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControl from "@material-ui/core/FormControl";
 import FieldBtn from "./FieldBtn";
 const renderTextField = ({
+  formData,
   input,
   label,
   meta: { touched, invalid, error },

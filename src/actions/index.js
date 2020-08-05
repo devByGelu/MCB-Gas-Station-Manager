@@ -6,102 +6,32 @@ import formInit from "../components/pages/ShiftForm/formInit";
 import ExpenseCategoryAPI from "../apis/ExpenseCategoryAPI";
 import ProductAPI from "../apis/ProductAPI";
 import CustomerAPI from "../apis/CustomerAPI";
+import ShiftFormAPI from "../apis/ShiftFormAPI";
 const dateFormat = require("dateformat");
-export const fetchFormData = () => async (dispatch) => {
+
+export const togglePumpInfoField = (number, field, product, switchSet) => ({
+  type: "TOGGLE_PUMP_INFO_FIELD",
+  payload: { number, field, product, switchSet },
+});
+export const fetchFormData = (year, month, day, shift, placement) => async (
+  dispatch
+) => {
   dispatch({
     type: "FETCH_FORM_DATA_REQUEST",
   });
   try {
-    const response1 = await EmployeeAPI.get("/");
-    const response2 = await ExpenseCategoryAPI.get("/");
-    const response3 = await CustomerAPI.get("/");
-    const response4 = await ProductAPI.get("/");
+    const response = await ShiftFormAPI.get(
+      `/${year}/${month}/${day}/${shift}`,
+      { params: { placement } }
+    );
     dispatch({
       type: "FETCH_FORM_DATA_SUCCESS",
-      payload: {
-        employees: response1.data,
-        expenseCategories: response2.data,
-        customers: response3.data,
-        products: response4.data,
-      },
-    });
-  } catch (error) {
-    console.log(error)
-    dispatch({
-      type: "FETCH_FORM_DATA_FAILURE",
-      payload: error.response,
-    });
-  }
-};
-export const fetchFormInitialValues = (fId, openedForm) => async (dispatch) => {
-  dispatch({
-    type: "FORM_INITIAL_VALUES_REQUEST",
-  });
-  try {
-    const {
-      attendance_form_fId,
-      advance_reading_form_fId,
-      dipstick_reading_form_fId,
-      drop_form_fId,
-      expense_form_fId,
-    } = openedForm;
-    let basicInfo, advanceReading, dipstickReading, dropForm, expenseForm;
-    let formInitVals = formInit();
-    let payload = {
-      ...formInitVals,
-    };
-
-    if (attendance_form_fId != null) {
-      basicInfo = await FormsAPI.get("/group1", {
-        params: {
-          fId,
-        },
-      });
-      payload = { ...payload, ...basicInfo.data };
-    }
-    if (advance_reading_form_fId != null) {
-      advanceReading = await FormsAPI.get("/group2", {
-        params: {
-          fId,
-        },
-      });
-      payload = { ...payload, ...advanceReading.data };
-    }
-    if (dipstick_reading_form_fId != null) {
-      dipstickReading = await FormsAPI.get("/group3", {
-        params: {
-          fId,
-        },
-      });
-
-      payload = { ...payload, ...dipstickReading.data };
-    }
-    if (drop_form_fId != null) {
-      dropForm = await FormsAPI.get("/group4", {
-        params: {
-          fId,
-        },
-      });
-      payload = { ...payload, ...dropForm.data };
-    }
-    if (expense_form_fId != null) {
-      expenseForm = await FormsAPI.get("/group5", {
-        params: {
-          fId,
-        },
-      });
-      payload = { ...payload, ...expenseForm.data };
-    }
-
-    dispatch({
-      type: "FORM_INITIAL_VALUES_SUCCESS",
-      payload: payload,
+      payload: response.data,
     });
   } catch (error) {
     console.log(error);
-    console.log(error.response);
     dispatch({
-      type: "FORM_INITIAL_VALUES_FAILURE",
+      type: "FETCH_FORM_DATA_FAILURE",
       payload: error.response,
     });
   }
@@ -136,6 +66,9 @@ export const updateOpenedForm = (date, placement) => async (dispatch) => {
 };
 export const closeForm = () => ({
   type: "CLOSE_FORM",
+});
+export const toggleShiftFormEditMode = () => ({
+  type: "TOGGLE_SHIFT_FORM_EDIT_MODE",
 });
 export const fetchBasicInformation = (fId) => async (dispatch) => {
   dispatch({
@@ -202,10 +135,12 @@ export const fetchMonthForms = (year, month) => async (dispatch) => {
   });
 
   try {
-    const response = await FormsAPI.get(`/${year}/${month}`);
-    dispatch({ type: "FETCH_MONTH_FORMS_SUCCESS", payload: response.data });
+    const response = await ShiftFormAPI.get(`/${year}/${month}`);
+    dispatch({
+      type: "FETCH_MONTH_FORMS_SUCCESS",
+      payload: { results: response.data, year, month },
+    });
   } catch (error) {
-    console.log(error.response);
     dispatch({
       type: "FETCH_MONTH_FORMS_FAILURE",
       payload: error.response,
@@ -220,12 +155,14 @@ export const changeActivePanel = (pumpNumIndex, active) => ({
     active,
   },
 });
-export const changeSelectedDay = (day) => ({
-  type: "CHANGE_SELECTED_DAY",
-  payload: {
-    day,
-  },
+export const resetFormData = () => ({
+  type: "RESET_FORM_DATA",
 });
+export const changeSelectedDate = (date) => ({
+  type: "CHANGE_SELECTED_DATE",
+  payload: date,
+});
+
 export const changeSelectedDaySelectedForm = (placement) => ({
   type: "CHANGED_SELECTED_DAY_SELECTED_FORM",
   payload: {
@@ -239,7 +176,19 @@ export const openForm = (form) => ({
     form,
   },
 });
+export const reinitializeFormData = (values) => ({
+  type: "REINITIALIZE_FORM_DATA",
+  payload: values,
+});
 
+export const setShiftFormCreated = (fId) => ({
+  type: "SHIFT_FORM_CREATED",
+  payload: fId,
+});
+export const toggleMenuItem = (index) => ({
+  type: "TOGGLE_MENU_ITEM",
+  payload: index,
+});
 export const submitform = (year, month, day, placement, eId, shift) => async (
   dispatch
 ) => {

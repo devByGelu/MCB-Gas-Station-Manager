@@ -13,7 +13,12 @@ import { FieldArray, reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
-
+import { createNumberMask, createTextMask } from 'redux-form-input-masks';
+const currencyMask = createNumberMask({
+  prefix: 'PHP',
+  decimalPlaces: 2,
+  allowNegative: false
+})
 const useStyles = makeStyles({
   table: {
     fontSize: 3,
@@ -25,7 +30,7 @@ const useStyles = makeStyles({
     fontSize: 10,
   },
 });
-function ProductPrices() {
+function ProductPrices({isFieldDisabled}) {
   const classes = useStyles();
   function createData(groupNum) {
     const fields = ["diesel", "jxpremium", "accelrate"];
@@ -34,6 +39,9 @@ function ProductPrices() {
       (f) =>
         (data[f] = (
           <Field
+              disabled={isFieldDisabled}
+            type="tel"
+            {...currencyMask}
             inputProps={{ min: 0, style: { textAlign: "center" } }}
             name={`${groupNum}.${f}`}
             variant="outlined"

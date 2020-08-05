@@ -1,69 +1,39 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import { CardHeader } from '@material-ui/core'
-import DaysList from '../pages/AddShiftReport/DaysList'
+import React, { useEffect } from "react";
+import { CardHeader, Grid, CircularProgress } from "@material-ui/core";
+import DaysList from "../pages/AddShiftReport/DaysList";
+import FormCard from "../pages/AddShiftReport/ShiftReport/FormCard";
+import { fetchMonthForms } from "../../actions";
+import { connect } from "react-redux";
+import SelectedDayPanel from "./SelectedDayPanel";
+const dateFormat = require("dateformat");
+const DaysListPanel = ({ year, month, fetchMonthForms, monthForms }) => {
+  useEffect(() => {
+    fetchMonthForms(year, month);
+  }, [year, month]);
 
-const dateFormat = require('dateformat')
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 20,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-  cardHeaderTab: {
-    fontColor: 'white',
-    background: theme.palette.background.default,
-    maxHeight: 40,
-  },
-  cardHeaderText: {
-    // fontSize: 15,
-    // textAlign: 'right',
-    // paddingRight: 200,
-    color: theme.palette.primary.contrastText,
-  },
-}))
-
-export default function DaysListPanel(props) {
-  const { title, content, children } = props
-  const classes = useStyles()
-  const bull = <span className={classes.bullet}>•</span>
-
-  return (
-    <Card className={classes.root} variant='outlined'>
-      <CardHeader
-        title={
-          <Typography className={classes.title} color='textPrimary' component={'span'}>
-            <div className={classes.cardHeaderText} >
-              {dateFormat(new Date(), 'mmmm yyyy')}
-            </div>
-          </Typography>
-        }
-        className={classes.cardHeaderTab}
-      />
-      <CardContent>
-        <DaysList
-          month={dateFormat(new Date(), 'm')}
-          year={dateFormat(new Date(), 'yyyy')}
-        />
-      </CardContent>
-      <CardActions>
-        <Button size='small'>Learn More</Button>
-      </CardActions>
-    </Card>
-  )
-}
+  if (monthForms.error) return <>An error occured</>;
+  else if (monthForms.loading || !monthForms.results)
+    return (
+      <Grid container alignItems="center" justify="center">
+        <CircularProgress style={{ marginTop: 400 }} />
+      </Grid>
+    );
+  else {
+    const { year, month } = monthForms;
+    const d = new Date(year, parseInt(month) - 1);
+    let title = dateFormat(d, "mmmm, yyyy");
+    return (
+      <Grid container justify="center" spacing={2} alignItems="center">
+        <Grid>
+          <FormCard title={title}>
+            <DaysList monthForms={monthForms} />
+          </FormCard>
+        </Grid>
+      </Grid>
+    );
+  }
+};
+const mapStateToProps = (state) => ({
+  monthForms: state.monthForms,
+});
+export default connect(mapStateToProps, { fetchMonthForms })(DaysListPanel);

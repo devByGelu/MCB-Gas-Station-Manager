@@ -1,96 +1,122 @@
-import React, { useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import StarIcon from '@material-ui/icons/Star'
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import StarIcon from "@material-ui/icons/Star";
 import nextId from "react-id-generator";
-import  DaysListItem  from './DaysListItem'
-import Skeleton from '@material-ui/lab/Skeleton';
-import { fetchFormMonth, fetchMonthForms } from '../../../actions'
-import { connect } from 'react-redux'
+import Skeleton from "@material-ui/lab/Skeleton";
+import MailIcon from "@material-ui/icons/Mail";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import { fetchMonthForms, changeSelectedDate } from "../../../actions";
+import { connect } from "react-redux";
+import {
+  Grid,
+  Paper,
+  Stepper,
+  Step,
+  StepButton,
+  Button,
+  StepContent,
+  ListSubheader,
+  Badge,
+} from "@material-ui/core";
+import DaysListItemMenu from "./DaysListItemMenu";
+const dateFormat = require("dateformat");
 
+function numberOfDays(month, year) {
+  return new Date(year, month, 0).getDate();
+}
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
-    // maxWidth: 700,
+    width: "100%",
+    maxWidth: 400,
     backgroundColor: theme.palette.background.paper,
+    position: "relative",
+    overflow: "auto",
+    maxHeight: 430,
   },
-}))
-function daysInMonth(month, year) {
-  return new Date(year, month, 0).getDate()
-}
-function DaysList(props) {
-  const { month, year, fetchMonthForms, monthForms } = props
-  const dayLength = daysInMonth(month, year)
-  let days = []
-  for (let index = 0; index < dayLength; index++) days.unshift(index + 1)
-  const classes = useStyles()
+  liTextRoot: {
+    paddingLeft: 0,
+    paddingRight: 10,
+  },
+}));
+const DaysList = ({ changeSelectedDate, monthForms }) => {
+  // Store in reverse days of the month
+  const getDays = () => {
+    const { month, year } = monthForms;
+    let lastDayOfMonth = numberOfDays(month, year);
+    let days = [];
+    for (let index = 0; index < lastDayOfMonth; index++)
+      days.unshift(index + 1);
+    return days;
+  };
+  // Filter results with same date
+  const countShiftReports = (checkedDay) => {
+    let count = 0;
+    monthForms.results.forEach((shiftForm) => {
+      const date = new Date(shiftForm.date);
+      if (checkedDay == dateFormat(date, "d")) count += 1;
+    });
+    return count;
+  };
+  // Get number of days in a month
+  let days = getDays();
+  const classes = useStyles();
+  const getDay = (date) => dateFormat(date, "dddd");
+  return (
+    <List className={classes.root}>
+      {days.map((day, index) => {
+        // Get date under list item
+        const selectedDate = new Date(
+          monthForms.year,
+          parseInt(monthForms.month) - 1,
+          day
+        );
+        // Get all shift reports under a specific date
+        const getShiftReports = (selectedDate) => {
+          return monthForms.results.filter(
+            (form) =>
+              dateFormat(form.date, "isoDate") ==
+              dateFormat(selectedDate, "isoDate")
+          );
+        };
 
-  const shiftHasAMPM = (day, month, year) => {
-    let hasAM = monthForms.results.find((el) => {
-      const d = new Date(el.date)
-      const elDay = d.getDate() == day
-      const elMonth = d.getMonth() + 1 == month
-      const elYear = d.getFullYear() == year
-      const isAM = el.shift === 'AM'
-      return elDay && elMonth && elYear && isAM
-    })
-    let hasPM = monthForms.results.find((el) => {
-      const d = new Date(el.date)
-      const elDay = d.getDate() == day
-      const elMonth = d.getMonth() + 1 == month
-      const elYear = d.getFullYear() == year
-      const isAM = el.shift === 'PM'
-      return elDay && elMonth && elYear && isAM
-    })
-    if (hasAM && hasPM) return 'complete'
-    else if (hasAM || hasPM) return 'incomplete'
-    else return 'none'
-  }
-  useEffect(() => {
-    fetchMonthForms(year, month)
-  }, [year, month, ])
-  if (monthForms.error == null && !monthForms.loading && !monthForms.results)
-    return <>init</>
-  else if (monthForms.error !== null || monthForms.error !==null) return <>Error</>
-  else if (monthForms.loading)
-    return (
-      <>
-        <Skeleton />
-        <Skeleton animation={false} />
-        <Skeleton animation='wave' />
-      </>
-    )
-  else
-    return (
-      <List
-        component='nav'
-        className={classes.root}
-        aria-label='contacts'
-        style={{ overflow: 'auto', maxHeight: 320, overflowX: 'hidden' }}>
-        {days.map((day) => (
-          <DaysListItem
-            key={nextId()}
+        return (
+          <DaysListItemMenu
             day={day}
-            month={month}
-            year={year}
-            completionState={shiftHasAMPM(day, month, year)}
-          />
-        ))}
-      </List>
-    )
-}
+            shiftReports={getShiftReports(selectedDate)}
+            key={index}
+          >
+            <ListItem
+              key={index}
+              button
+              onClick={() => {
+                changeSelectedDate(selectedDate);
+              }}
+            >
+              <ListItemIcon>
+                <Badge badgeContent={countShiftReports(day)} color="primary">
+                  <AssignmentIcon />
+                </Badge>
+              </ListItemIcon>
+              <ListItemText
+                classes={{ root: classes.liTextRoot }}
+                inset
+                primary={`${day}`}
+                secondary={getDay(selectedDate)}
+              />
+            </ListItem>
+          </DaysListItemMenu>
+        );
+      })}
+    </List>
+  );
+};
 const mapStateToProps = (state) => {
   return {
     monthForms: state.monthForms,
-  }
-}
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    fetchMonthForms: () =>
-      dispatch(fetchMonthForms(ownProps.year, ownProps.month)),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(DaysList)
+  };
+};
+export default connect(mapStateToProps, { changeSelectedDate })(DaysList);

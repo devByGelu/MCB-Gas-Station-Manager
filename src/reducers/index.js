@@ -12,6 +12,8 @@ import createFormDialogReducer from "./createFormDialogReducer";
 import basicInfoReducer from "../components/shared/basicInfoReducer";
 import formInitialValuesReducer from "../components/shared/formInitialValuesReducer";
 import fetchFormDataReducer from "./fetchFormDataReducer";
+import expandedDrawerItemsReducers from "./expandedDrawerItemsReducers";
+import pumpInfoFieldsReducer from "./pumpInfoFieldsReducer";
 export default combineReducers({
   employees: employeesReducer,
   form: formReducer,
@@ -26,4 +28,6 @@ export default combineReducers({
   formBasicInformation: basicInfoReducer,
   formInitialValues: formInitialValuesReducer,
   formData: fetchFormDataReducer,
+  expandableDrawerItems: expandedDrawerItemsReducers,
+  pumpInfoFields: pumpInfoFieldsReducer,
 });

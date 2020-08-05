@@ -13,6 +13,9 @@ import { FieldArray, reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
+import { createNumberMask } from "redux-form-input-masks";
+import { togglePumpInfoField } from "../../../../actions";
+
 const useStyles = makeStyles({
   table: {
     maxWidth: 2000,
@@ -25,29 +28,51 @@ const useStyles = makeStyles({
     fontSize: 10,
   },
 });
-function PumpInfo({ number }) {
+
+function PumpInfo({
+  pumpInfoFields,
+  isFieldDisabled,
+  number,
+  change,
+  togglePumpInfoField,
+}) {
   const classes = useStyles();
+
+  const isDisabled = (f, product) => {
+    if ((f === "beg" || isFieldDisabled) && (f !== "mgn" || f !== "cal"))
+      return true;
+    else if (f === "mgn" || f === "cal") return pumpInfoFields[product][f];
+    else return isFieldDisabled;
+  };
+  function handleBlur(field, product) {
+    if ((field === "cal" || field === "mgn") && !isFieldDisabled)
+      togglePumpInfoField(number, field, product, true);
+  }
+  function handleDoubleClick(field, product) {
+    if ((field === "cal" || field === "mgn") && !isFieldDisabled)
+      togglePumpInfoField(number, field, product, false);
+  }
   function createData(pName) {
-    const fields = [
-      "advRd",
-      "end",
-      "beg",
-      "cal",
-      "mgn",
-      "lSold",
-      "cLSold",
-      "sales",
-      "income",
-    ];
+    const fields = ["advRd", "end", "beg", "cal", "mgn"];
     let data = {};
     data.pName = pName;
     fields.forEach(
       (f) =>
         (data[f] = (
           <Field
+            onBlur={() => handleBlur(f, pName)}
+            onDoubleClick={() => handleDoubleClick(f, pName)}
+            type="tel"
+            disabled={isDisabled(f, pName)}
             variant="outlined"
             name={`pump${number}.${pName}.${f}`}
             component={renderTextField}
+            {...createNumberMask({
+              decimalPlaces:
+                f === "advRd" ? 2 : f === "cal" || f === "mgn" ? 1 : 3,
+              allowEmpty: f === "advRd" ? false : true,
+              allowNegative: false,
+            })}
           />
         ))
     );
@@ -69,37 +94,33 @@ function PumpInfo({ number }) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>PRODUCT</TableCell>
+            <TableCell>FUEL</TableCell>
             <TableCell align="right">ADV RDNG</TableCell>
             <TableCell align="right">END</TableCell>
             <TableCell align="right">BEG</TableCell>
             <TableCell align="right">CAL</TableCell>
             <TableCell align="right">MGN</TableCell>
-            <TableCell align="right">L SOLD</TableCell>
-            <TableCell align="right">CAL L SOLD</TableCell>
-            <TableCell align="right">SALES</TableCell>
-            <TableCell align="right">INCOME</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row, index) => (
             <TableRow key={index}>
-              <TableCell component="th" scope="row">
-                {row.pName}
+              <TableCell width="5%" component="th" scope="row">
+                {row.pName === "diesel"
+                  ? "DSL"
+                  : row.pName === "accelrate"
+                  ? "ACL"
+                  : "JXP"}
               </TableCell>
               <TableCell align="right">{row.advRd}</TableCell>
-              <TableCell align="right">{row.end}</TableCell>
-              <TableCell align="right">{row.beg}</TableCell>
-              <TableCell width="7%" align="right">
-                {row.cal}
+              <TableCell width="25%" align="right">
+                {row.end}
               </TableCell>
-              <TableCell width="7%" align="right">
-                {row.mgn}
+              <TableCell width="25%" align="right">
+                {row.beg}
               </TableCell>
-              <TableCell align="right">{row.lSold}</TableCell>
-              <TableCell align="right">{row.cLSold}</TableCell>
-              <TableCell align="right">{row.sales}</TableCell>
-              <TableCell align="right">{row.income}</TableCell>
+              <TableCell align="right">{row.cal}</TableCell>
+              <TableCell align="right">{row.mgn}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -107,11 +128,10 @@ function PumpInfo({ number }) {
     </FormCard>
   );
 }
-
-export default connect(
-  null,
-  null
-)(
+const mapStateToProps = (state, ownProps) => ({
+  pumpInfoFields: state.pumpInfoFields[`pump${ownProps.number}`],
+});
+export default connect(mapStateToProps, { togglePumpInfoField })(
   reduxForm({
     form: "shiftForm",
   })(PumpInfo)

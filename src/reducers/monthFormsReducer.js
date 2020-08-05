@@ -9,6 +9,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case "CHANGE_SELECTED_DATE":
+      return {
+        ...state,
+        selectedDate: action.payload
+      }
     case "FETCH_MONTH_FORMS_REQUEST":
       return {
         ...state,
@@ -19,7 +24,9 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        results: action.payload,
+        results: action.payload.results,
+        year:action.payload.year,
+        month:action.payload.month,
       }
 
     case "FETCH_MONTH_FORMS_FAILURE":

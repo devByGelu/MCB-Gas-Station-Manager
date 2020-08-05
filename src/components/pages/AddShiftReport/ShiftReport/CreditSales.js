@@ -16,14 +16,31 @@ import {
   Box,
   IconButton,
   InputAdornment,
+  FormControlLabel,
+  Checkbox,
+  Typography,
+  MenuItem,
 } from "@material-ui/core";
 import nextId from "react-id-generator";
-import { FieldArray, reduxForm, Field } from "redux-form";
+import { FieldArray, reduxForm, Field, formValueSelector } from "redux-form";
 import { connect } from "react-redux";
 import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
+import { createNumberMask } from "redux-form-input-masks";
+import renderSelectField from "../../../shared/renderSelectField";
 
-const renderCreditSales = ({customers,products, fields, meta: { error, submitFailed } }) => (
+const currencyMask = createNumberMask({
+  prefix: "PHP",
+  decimalPlaces: 2,
+  allowNegative: false,
+});
+const renderCreditSales = ({
+  isFieldDisabled,
+  customers,
+  products,
+  fields,
+  meta: { error, submitFailed },
+}) => (
   <>
     {fields.map((field, index) => {
       const willAdd = index === 0;
@@ -34,11 +51,13 @@ const renderCreditSales = ({customers,products, fields, meta: { error, submitFai
           container
           md={12}
           spacing={1}
-          justify="center"
-          alignItems="flex-start"
+          justify="flex-end"
+          alignItems="flex-end"
+          wrap="nowrap"
         >
           <Grid item style={{ paddingTop: 7 }}>
             <IconButton
+              disabled={isFieldDisabled}
               aria-label="delete"
               onClick={
                 willAdd ? () => fields.push({}) : () => fields.remove(index)
@@ -48,42 +67,36 @@ const renderCreditSales = ({customers,products, fields, meta: { error, submitFai
             </IconButton>
           </Grid>
           <Grid item>
-            <Autocomplete
-              size="small"
-              options={customers}
-              getOptionLabel={(option) => option.companyName}
-              renderInput={(params) => (
-                <Field
-                  {...params}
-                  label="Customer"
-                  variant="outlined"
-                  name={`${field}.companyName`}
-                  component={renderTextField}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item>
-            {/* <Autocomplete
-              size="small"
-              key={index}
-              options={categories}
-              getOptionLabel={(option) => option.label}
-              renderInput={(params) => ( */}
-                <Field
-                  // {...params}
-                  label="Driver"
-                  variant="outlined"
-                  name={`${field}.driver`}
-                  component={renderTextField}
-                />
-              {/* )}
-            /> */}
+            <Field
+              disabled={isFieldDisabled}
+              name={`${field}.companyName`}
+              component={renderSelectField}
+              style={{ width: "100px" }}
+              label="Customer"
+            >
+              {customers.map((cust, index) => (
+                <MenuItem key={cust.companyName} value={cust.companyName}>
+                  {cust.companyName}
+                </MenuItem>
+              ))}
+            </Field>
           </Grid>
           <Grid item>
             <Field
+              disabled={isFieldDisabled}
+              label="Driver"
+              variant="outlined"
+              size="small"
+              name={`${field}.driver`}
+              component={renderTextField}
+            />
+          </Grid>
+          <Grid item>
+            <Field
+              disabled={isFieldDisabled}
               name={`${field}.plateNum`}
-              style={{ width: "70px" }}
+              style={{ width: "100px" }}
+              type="text"
               variant="outlined"
               size="small"
               label="Plate#"
@@ -92,49 +105,60 @@ const renderCreditSales = ({customers,products, fields, meta: { error, submitFai
           </Grid>
           <Grid item>
             <Field
+              disabled={isFieldDisabled}
               name={`${field}.invoiceNum`}
               style={{ width: "70px" }}
+              type="tel"
               variant="outlined"
               size="small"
               label="Invoice#"
+              {...createNumberMask({
+                allowNegative: false,
+              })}
               component={renderTextField}
             />
           </Grid>
 
           <Grid item>
-            <Autocomplete
-              size="small"
-              key={index}
-              options={products}
-              getOptionLabel={(option) => option.pName}
-              renderInput={(params) => (
-                <Field
-                  {...params}
-                  label="Fuel type"
-                  variant="outlined"
-                  name={`${field}.pName`}
-                  component={renderTextField}
-                />
-              )}
-            />
+            <Field
+              disabled={isFieldDisabled}
+              name={`${field}.pName`}
+              style={{ width: "100px" }}
+              component={renderSelectField}
+              label="Fuel Type"
+            >
+              {products.map((prod, index) => (
+                <MenuItem key={prod.pName} value={prod.pName}>
+                  {prod.pName}
+                </MenuItem>
+              ))}
+            </Field>
           </Grid>
           <Grid item>
             <Field
+              disabled={isFieldDisabled}
               name={`${field}.volume`}
               variant="outlined"
               size="small"
               label="Volume"
               style={{ width: "90px" }}
+              {...createNumberMask({
+                decimalPlaces: 3,
+                allowNegative: false,
+              })}
               component={renderTextField}
             />
           </Grid>
           <Grid item>
             <Field
+              disabled={isFieldDisabled}
               name={`${field}.discountedPrice`}
               style={{ width: "90px" }}
+              type="tel"
               variant="outlined"
               size="small"
               label="Disc. Price"
+              {...currencyMask}
               component={renderTextField}
             />
           </Grid>
@@ -143,15 +167,59 @@ const renderCreditSales = ({customers,products, fields, meta: { error, submitFai
     })}
   </>
 );
-function CreditSales({customers,products}) {
+function CreditSales({
+  isFieldDisabled,
+  creditsales,
+  change,
+  customers,
+  products,
+}) {
   return (
-    <FormCard width={900} title={`Credit Sales`} >
-      <FieldArray name="creditsales" customers={customers} products={products} component={renderCreditSales} />
+    <FormCard
+      action={
+        <FormControlLabel
+          control={
+            <Checkbox
+              disabled={isFieldDisabled}
+              style={{
+                color: "white",
+              }}
+              checked={creditsales.length ? true : false}
+              onClick={() =>
+                creditsales.length
+                  ? change("creditsales", [])
+                  : change("creditsales", [{}])
+              }
+            />
+          }
+          label={
+            <Typography variant="overline" style={{ color: "white" }}>
+              Include
+            </Typography>
+          }
+        />
+      }
+      title={`Credit Sales`}
+    >
+      <FieldArray
+        isFieldDisabled={isFieldDisabled}
+        name="creditsales"
+        customers={customers}
+        products={products}
+        component={renderCreditSales}
+      />
     </FormCard>
   );
 }
 
+const selector = formValueSelector("shiftForm"); // <-- same as form name
+const mapStateToProps = (state) => {
+  const creditsales = selector(state, "creditsales");
+  return {
+    creditsales,
+  };
+};
 export default connect(
-  null,
+  mapStateToProps,
   null
 )(reduxForm({ form: "shiftForm" })(CreditSales));

@@ -1,50 +1,48 @@
 import React from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/Add";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import {
-  TextField,
   Grid,
-  Box,
   IconButton,
-  InputAdornment,
+  Checkbox,
+  Typography,
+  FormControlLabel,
+  MenuItem,
 } from "@material-ui/core";
-import nextId from "react-id-generator";
-import { FieldArray, reduxForm, Field } from "redux-form";
+import { FieldArray, reduxForm, Field, formValueSelector } from "redux-form";
 import { connect } from "react-redux";
 import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
+import { createNumberMask } from "redux-form-input-masks";
+import renderSelectField from "../../../shared/renderSelectField";
 
 const renderCashAdvance = ({
   employees,
+  isFieldDisabled,
   fields,
   meta: { error, submitFailed },
 }) => {
+  {
+    console.log("rerenderr cashadvance");
+  }
   return (
     <>
-      {console.log(employees)}
       {fields.map((field, index) => {
         const willAdd = index === 0;
+
         return (
           <Grid
             key={index}
             item
             container
-            md={12}
+            xs={12}
             spacing={1}
-            justify="center"
-            alignItems="flex-start"
+            justify="flex-end"
+            alignItems="flex-end"
           >
-            <Grid item md={2} style={{ paddingTop: 7 }}>
+            <Grid item xs={2} style={{ paddingTop: 7 }}>
               <IconButton
+                disabled={isFieldDisabled}
                 aria-label="delete"
                 onClick={
                   willAdd ? () => fields.push({}) : () => fields.remove(index)
@@ -53,30 +51,34 @@ const renderCashAdvance = ({
                 {willAdd ? <AddIcon /> : <DeleteIcon />}
               </IconButton>
             </Grid>
-            <Grid item md={5}>
-              <Autocomplete
-                size="small"
-                key={index}
-                options={employees}
-                getOptionLabel={(option) => option.nickName}
-                renderInput={(params) => (
-                  <Field
-                    {...params}
-                    label="Employee"
-                    variant="outlined"
-                    name={`${field}.employee`}
-                    component={renderTextField}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={5}>
+            <Grid item xs={5}>
               <Field
+                name={`${field}.employee`}
+                component={renderSelectField}
+                label="Employee"
+                disabled={isFieldDisabled}
+              >
+                {employees.map((emp, index) => (
+                  <MenuItem key={index} value={emp.eId}>
+                    {emp.nickName}
+                  </MenuItem>
+                ))}
+              </Field>
+            </Grid>
+            <Grid item xs={5}>
+              <Field
+                disabled={isFieldDisabled}
                 label="Amount"
+                type="tel"
                 size="small"
                 name={`${field}.amt`}
                 variant="outlined"
                 component={renderTextField}
+                {...createNumberMask({
+                  prefix: "PHP",
+                  decimalPlaces: 2,
+                  allowNegative: false,
+                })}
               />
             </Grid>
           </Grid>
@@ -85,19 +87,56 @@ const renderCashAdvance = ({
     </>
   );
 };
-const CashAdvance = ({ employees }) => {
+const CashAdvance = ({ employees, change, cashadvance, isFieldDisabled }) => {
   return (
-    <FormCard width={900} title={`Cash Advance`}>
-      <FieldArray
-        employees={employees}
-        name="cashadvance"
-        component={renderCashAdvance}
-      />
+    <FormCard
+      action={
+        <FormControlLabel
+          control={
+            <Checkbox
+              disabled={isFieldDisabled}
+              style={{
+                color: "white",
+              }}
+              checked={cashadvance.length ? true : false}
+              onClick={() =>
+                cashadvance.length
+                  ? change("cashadvance", [])
+                  : change("cashadvance", [{}])
+              }
+            />
+          }
+          label={
+            <Typography variant="overline" style={{ color: "white" }}>
+              Include
+            </Typography>
+          }
+        />
+      }
+      width={900}
+      title={`Cash Advance`}
+    >
+      {cashadvance.length ? (
+        <FieldArray
+          isFieldDisabled={isFieldDisabled}
+          employees={employees}
+          name="cashadvance"
+          component={renderCashAdvance}
+        />
+      ) : (
+        <></>
+      )}
     </FormCard>
   );
-}
-
+};
+const selector = formValueSelector("shiftForm"); // <-- same as form name
+const mapStateToProps = (state) => {
+  const cashadvance = selector(state, "cashadvance");
+  return {
+    cashadvance,
+  };
+};
 export default connect(
-  null,
+  mapStateToProps,
   null
 )(reduxForm({ form: "shiftForm" })(CashAdvance));

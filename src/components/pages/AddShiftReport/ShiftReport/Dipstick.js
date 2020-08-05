@@ -13,7 +13,7 @@ import { FieldArray, reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
-
+import { createNumberMask } from "redux-form-input-masks";
 const useStyles = makeStyles({
   table: {
     fontSize: 3,
@@ -25,7 +25,17 @@ const useStyles = makeStyles({
     fontSize: 10,
   },
 });
-function Dipstick({ number }) {
+const under2k = (value) => {
+  if (value < 0) {
+    return 0;
+  } else if (value > 2000) {
+    return parseInt(2000);
+  } else {
+    return value;
+  }
+};
+
+function Dipstick({ number, isFieldDisabled }) {
   const classes = useStyles();
   function createData(pName) {
     const fields = [
@@ -42,7 +52,12 @@ function Dipstick({ number }) {
           <Field
             name={`${pName}.${f}`}
             variant="outlined"
+            type="tel"
             component={renderTextField}
+            disabled={isFieldDisabled}
+            {...createNumberMask({
+              allowNegative: false,
+            })}
           />
         ))
     );

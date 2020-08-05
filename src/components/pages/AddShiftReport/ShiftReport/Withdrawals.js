@@ -16,14 +16,30 @@ import {
   Box,
   IconButton,
   InputAdornment,
+  FormControlLabel,
+  Checkbox,
+  Typography,
+  MenuItem,
 } from "@material-ui/core";
 import nextId from "react-id-generator";
-import { FieldArray, reduxForm, Field } from "redux-form";
+import { FieldArray, reduxForm, Field, formValueSelector } from "redux-form";
 import { connect } from "react-redux";
 import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
+import { createNumberMask } from "redux-form-input-masks";
+import renderSelectField from "../../../shared/renderSelectField";
+const currencyMask = createNumberMask({
+  prefix: "PHP",
+  decimalPlaces: 2,
+  allowNegative: false,
+});
 
-const renderExpenses = ({expenseCategories, fields, meta: { error, submitFailed } }) => (
+const renderExpenses = ({
+  isFieldDisabled,
+  expenseCategories,
+  fields,
+  meta: { error, submitFailed },
+}) => (
   <>
     {fields.map((field, index) => {
       const willAdd = index === 0;
@@ -32,14 +48,15 @@ const renderExpenses = ({expenseCategories, fields, meta: { error, submitFailed 
           key={index}
           item
           container
-          md={12}
           spacing={1}
-          justify="center"
-          alignItems="flex-start"
+          justify="flex-start"
+          alignItems="flex-end"
+          wrap="nowrap"
         >
-          <Grid item md={1} style={{ paddingTop: 7 }}>
+          <Grid item style={{ paddingTop: 7 }}>
             <IconButton
               aria-label="delete"
+              disabled={isFieldDisabled}
               onClick={
                 willAdd ? () => fields.push({}) : () => fields.remove(index)
               }
@@ -47,38 +64,43 @@ const renderExpenses = ({expenseCategories, fields, meta: { error, submitFailed 
               {willAdd ? <AddIcon /> : <DeleteIcon />}
             </IconButton>
           </Grid>
-          <Grid item md={4}>
-            <Autocomplete
-              size="small"
-              options={expenseCategories}
-              getOptionLabel={(option) => option.catName}
-              renderInput={(params) => (
-                <Field
-                  {...params}
-                  label="Category"
-                  variant="outlined"
-                  name={`${field}.catName`}
-                  component={renderTextField}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={4}>
+          <Grid item>
             <Field
+              disabled={isFieldDisabled}
+              name={`${field}.catName`}
+              component={renderSelectField}
+              label="Category"
+              style={{ width: "100px" }}
+            >
+              {expenseCategories.map((cat, index) => (
+                <MenuItem key={cat.catName} value={cat.catName}>
+                  {cat.catName}
+                </MenuItem>
+              ))}
+            </Field>
+          </Grid>
+          <Grid item>
+            <Field
+              disabled={isFieldDisabled}
               label="Description"
               size="small"
               name={`${field}.description`}
+              style={{ width: "250px" }}
               variant="outlined"
               component={renderTextField}
             />
           </Grid>
-          <Grid item md={2}>
+          <Grid item>
             <Field
+              disabled={isFieldDisabled}
               label="Total"
               size="small"
+              type="tel"
               name={`${field}.total`}
               variant="outlined"
+              style={{ width: "100px" }}
               component={renderTextField}
+              {...currencyMask}
             />
           </Grid>
         </Grid>
@@ -86,15 +108,58 @@ const renderExpenses = ({expenseCategories, fields, meta: { error, submitFailed 
     })}
   </>
 );
-const Withdrawals = ({expenseCategories}) => {
+const Withdrawals = ({
+  isFieldDisabled,
+  expenseCategories,
+  change,
+  expenses,
+}) => {
   return (
-    <FormCard width={900} title={`Utilities & Daily Expenses`}>
-      <FieldArray name="expenses" expenseCategories={expenseCategories} component={renderExpenses} />
+    <FormCard
+      action={
+        <FormControlLabel
+          control={
+            <Checkbox
+              disabled={isFieldDisabled}
+              style={{
+                color: "white",
+              }}
+              checked={expenses.length ? true : false}
+              onClick={() =>
+                expenses.length
+                  ? change("expenses", [])
+                  : change("expenses", [{}])
+              }
+            />
+          }
+          label={
+            <Typography variant="overline" style={{ color: "white" }}>
+              Include
+            </Typography>
+          }
+        />
+      }
+      width={900}
+      title={`Daily Withdrawals`}
+    >
+      <FieldArray
+        isFieldDisabled={isFieldDisabled}
+        name="expenses"
+        expenseCategories={expenseCategories}
+        component={renderExpenses}
+      />
     </FormCard>
   );
 };
 
+const selector = formValueSelector("shiftForm"); // <-- same as form name
+const mapStateToProps = (state) => {
+  const expenses = selector(state, "expenses");
+  return {
+    expenses,
+  };
+};
 export default connect(
-  null,
+  mapStateToProps,
   null
 )(reduxForm({ form: "shiftForm" })(Withdrawals));

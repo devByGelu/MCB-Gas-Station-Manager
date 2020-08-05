@@ -13,38 +13,45 @@ import { FieldArray, reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
+import { createNumberMask } from "redux-form-input-masks";
 const StyledListItem = withStyles({
   root: {
     paddingTop: 0,
     paddingBottom: 0,
   },
 })(ListItem);
-function Breakdown({ number }) {
+function Breakdown({ isFieldDisabled, number }) {
   function createData(label, field) {
     return { label, field };
   }
   const getRows = () => {
     let rows = [];
     let vals = [
-      "1000",
-      "500",
-      "200",
-      "100",
-      "50",
-      "20",
-      "10",
-      "5",
-      "1",
-      "0.25",
+      "count1000",
+      "count500",
+      "count200",
+      "count100",
+      "count50",
+      "count20",
+      "count10",
+      "count5",
+      "count1",
+      "count025",
     ];
     vals.forEach((val) =>
       rows.push({
-        label: val,
+        label: val.slice(5),
         field: (
           <Field
+            disabled={isFieldDisabled}
+            type="tel"
             component={renderTextField}
             variant="outlined"
-            name={`breakdown.count${val}`}
+            name={`breakdown.${val}`}
+            {...createNumberMask({
+              allowNegative: false,
+              suffix: "pcs.",
+            })}
           />
         ),
       })
@@ -53,16 +60,15 @@ function Breakdown({ number }) {
   };
   let rows = getRows();
   return (
-    <FormCard title={`Breakdown`} >
+    <FormCard title={`Breakdown`}>
       <Table>
-        <TableHead></TableHead>
         <TableBody>
           <List style={{ maxHeight: 190, overflow: "auto" }}>
-            {rows.map((row,index) => (
+            {rows.map((row, index) => (
               <StyledListItem key={index} disableGutters={true}>
-                <TableRow >
+                <TableRow>
                   <TableCell component="th" scope="row">
-                    {row.label}
+                    {"PHP" + row.label}
                   </TableCell>
                   <TableCell width="40%" align="right">
                     {row.field}
