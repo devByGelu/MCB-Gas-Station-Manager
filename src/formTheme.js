@@ -21,6 +21,11 @@ const formTheme = createMuiTheme({
     fontSize: 12,
   },
   overrides: {
+    MuiCardHeader: {
+      root: {
+        padding: "1px 1px 1px 16px",
+      },
+    },
     MuiTableCell: {
       root: {
         //This can be referred from Material UI API documentation.
