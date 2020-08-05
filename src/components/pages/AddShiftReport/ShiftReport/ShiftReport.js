@@ -64,9 +64,6 @@ const ShiftReport = (props) => {
   }));
   const classes = useStyles();
   const {
-    cashadvance,
-    expenses,
-    creditsales,
     filledUpBy,
     error,
     handleSubmit,
@@ -201,13 +198,7 @@ const ShiftReport = (props) => {
 };
 const selector = formValueSelector("shiftForm"); // <-- same as form name
 const mapStateToProps = (state) => {
-  const creditsales = selector(state, "creditsales");
-  const cashadvance = selector(state, "cashadvance");
-  const expenses = selector(state, "expenses");
   return {
-    creditsales,
-    cashadvance,
-    expenses,
     formData: state.formData,
     initialValues: state.formData.results,
   };
