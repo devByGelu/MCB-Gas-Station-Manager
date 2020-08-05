@@ -15,6 +15,7 @@ import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
 import { createNumberMask } from "redux-form-input-masks";
 import renderSelectField from "../../../shared/renderSelectField";
+import CurrencyInput from "./CurrencyInput";
 
 const renderCashAdvance = ({
   employees,
@@ -66,19 +67,10 @@ const renderCashAdvance = ({
               </Field>
             </Grid>
             <Grid item xs={5}>
-              <Field
+              <CurrencyInput
                 disabled={isFieldDisabled}
                 label="Amount"
-                type="tel"
-                size="small"
                 name={`${field}.amt`}
-                variant="outlined"
-                component={renderTextField}
-                {...createNumberMask({
-                  prefix: "PHP",
-                  decimalPlaces: 2,
-                  allowNegative: false,
-                })}
               />
             </Grid>
           </Grid>

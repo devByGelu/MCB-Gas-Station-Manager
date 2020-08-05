@@ -28,6 +28,7 @@ import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
 import { createNumberMask } from "redux-form-input-masks";
 import renderSelectField from "../../../shared/renderSelectField";
+import CurrencyInput from "./CurrencyInput";
 const currencyMask = createNumberMask({
   prefix: "PHP",
   decimalPlaces: 2,
@@ -91,16 +92,10 @@ const renderExpenses = ({
             />
           </Grid>
           <Grid item>
-            <Field
+            <CurrencyInput
               disabled={isFieldDisabled}
               label="Total"
-              size="small"
-              type="tel"
               name={`${field}.total`}
-              variant="outlined"
-              style={{ width: "100px" }}
-              component={renderTextField}
-              {...currencyMask}
             />
           </Grid>
         </Grid>

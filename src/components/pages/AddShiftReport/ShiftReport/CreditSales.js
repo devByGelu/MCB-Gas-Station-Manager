@@ -28,6 +28,7 @@ import renderTextField from "../../../shared/renderTextField";
 import FormCard from "./FormCard";
 import { createNumberMask } from "redux-form-input-masks";
 import renderSelectField from "../../../shared/renderSelectField";
+import CurrencyInput from "./CurrencyInput";
 
 const currencyMask = createNumberMask({
   prefix: "PHP",
@@ -85,7 +86,6 @@ const renderCreditSales = ({
             <Field
               disabled={isFieldDisabled}
               label="Driver"
-              variant="outlined"
               size="small"
               name={`${field}.driver`}
               component={renderTextField}
@@ -97,7 +97,6 @@ const renderCreditSales = ({
               name={`${field}.plateNum`}
               style={{ width: "100px" }}
               type="text"
-              variant="outlined"
               size="small"
               label="Plate#"
               component={renderTextField}
@@ -109,7 +108,6 @@ const renderCreditSales = ({
               name={`${field}.invoiceNum`}
               style={{ width: "70px" }}
               type="tel"
-              variant="outlined"
               size="small"
               label="Invoice#"
               {...createNumberMask({
@@ -138,7 +136,6 @@ const renderCreditSales = ({
             <Field
               disabled={isFieldDisabled}
               name={`${field}.volume`}
-              variant="outlined"
               size="small"
               label="Volume"
               style={{ width: "90px" }}
@@ -150,16 +147,10 @@ const renderCreditSales = ({
             />
           </Grid>
           <Grid item>
-            <Field
+            <CurrencyInput
               disabled={isFieldDisabled}
-              name={`${field}.discountedPrice`}
-              style={{ width: "90px" }}
-              type="tel"
-              variant="outlined"
-              size="small"
               label="Disc. Price"
-              {...currencyMask}
-              component={renderTextField}
+              name={`${field}.discountedPrice`}
             />
           </Grid>
         </Grid>
