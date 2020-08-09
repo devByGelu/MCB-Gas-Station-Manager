@@ -77,6 +77,7 @@ function Auth(props) {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+
           <form className={classes.form} noValidate>
             <TextField
               variant="outlined"
@@ -94,10 +95,10 @@ function Auth(props) {
               margin="normal"
               required
               fullWidth
-              name="password"
-              label="Password"
               type="password"
               id="password"
+              label="Password"
+              name="password"
               autoComplete="current-password"
             />
             <FormControlLabel

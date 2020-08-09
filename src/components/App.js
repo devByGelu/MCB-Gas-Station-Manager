@@ -40,7 +40,8 @@ const App = ({ loadUser, auth }) => {
       <ThemeProvider theme={theme}>
         <Switch>
           <Route path="/auth" render={(props) => <Auth {...props} />} />
-          <ProtectedRoute path="/app" component={MainApp} />
+          <ProtectedRoute path="/shift-reports" component={MainApp} />
+          <ProtectedRoute component={MainApp} />
         </Switch>
       </ThemeProvider>
     </Router>
