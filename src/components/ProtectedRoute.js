@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { useHistory, Redirect } from "react-router-dom";
 
 const ProtectedRoute = ({ auth, component }) => {
-  const history = useHistory();
   return auth.isAuthenticated ? (
     <Component />
   ) : (

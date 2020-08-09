@@ -13,8 +13,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import { reduxForm } from "redux-form";
+import { reduxForm, Field } from "redux-form";
 import { withRouter, useHistory } from "react-router-dom";
+import renderTextField from "../../shared/renderTextField";
 
 function Copyright() {
   return (
@@ -65,6 +66,12 @@ const useStyles = makeStyles((theme) => ({
 function Auth(props) {
   const classes = useStyles();
   const history = useHistory();
+  const textFieldProps = {
+    variant: "outlined",
+    margin: "normal",
+    fullWidth: true,
+    component: renderTextField,
+  };
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -79,28 +86,22 @@ function Auth(props) {
           </Typography>
 
           <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
+            <Field
+              {...textFieldProps}
               label="Username"
-              name="email"
-              autoComplete="email"
+              name="username"
+              autoComplete="username"
               autoFocus
             />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
+            <Field
+              {...textFieldProps}
               type="password"
               id="password"
               label="Password"
               name="password"
               autoComplete="current-password"
             />
+
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
