@@ -196,7 +196,6 @@ const ShiftReport = (props) => {
     );
   }
 };
-const selector = formValueSelector("shiftForm"); // <-- same as form name
 const mapStateToProps = (state) => {
   return {
     formData: state.formData,

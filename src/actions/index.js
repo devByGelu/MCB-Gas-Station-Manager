@@ -7,8 +7,40 @@ import ExpenseCategoryAPI from "../apis/ExpenseCategoryAPI";
 import ProductAPI from "../apis/ProductAPI";
 import CustomerAPI from "../apis/CustomerAPI";
 import ShiftFormAPI from "../apis/ShiftFormAPI";
+import AuthAPI from "../apis/AuthAPI";
 const dateFormat = require("dateformat");
 
+export const loadUser = () => async (dispatch, getState) => {
+  dispatch({
+    type: "USER_LOADING",
+  });
+  // Getting token
+  try {
+    const response = await AuthAPI.get("/user", tokenConfig(getState));
+    dispatch({ type: "USER_LOADED", payload: response.data });
+  } catch (error) {
+    const { data, status, message } = error.response;
+    dispatch(returnErrors(data, status, message));
+    dispatch({ type: "AUTH_ERROR" });
+  }
+};
+export const tokenConfig = (getState) => {
+  const token = getState().auth.token;
+  const config = {
+    headers: {
+      "Content-type": "application/json",
+    },
+  };
+  if (token) config.headers["x-auth-token"] = token;
+  return config;
+};
+export const returnErrors = (msg, status, id = null) => ({
+  type: "GET_ERRORS",
+  payload: { msg, status, id },
+});
+export const clearErrors = () => ({
+  type: "CLEAR_ERRORS",
+});
 export const togglePumpInfoField = (number, field, product, switchSet) => ({
   type: "TOGGLE_PUMP_INFO_FIELD",
   payload: { number, field, product, switchSet },

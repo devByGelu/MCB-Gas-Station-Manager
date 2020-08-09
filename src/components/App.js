@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ClippedDrawer from "./pages/ShiftForm/ClippedDrawer";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory,
+  withRouter,
+} from "react-router-dom";
 // import 'fontsource-roboto';
 import AddShiftReport from "./pages/AddShiftReport/AddShiftReport";
 import Form from "./pages/ShiftForm/Form";
@@ -20,48 +26,24 @@ import theme from "../theme";
 // import ShiftReport from './pages/ShiftForm/MainForm/MainTabNav/ShiftReport'
 import ShiftReport from "./pages/AddShiftReport/ShiftReport/ShiftReport";
 import DownloadOptions from "./pages/DownloadShiftReport/DownloadOptions";
-const App = () => {
+import { loadUser } from "../actions";
+import { connect } from "react-redux";
+import Auth from "./pages/Auth/Auth";
+import ProtectedRoute from "./ProtectedRoute";
+import MainApp from "./MainApp";
+const App = ({ loadUser, auth }) => {
+  useEffect(() => {
+    loadUser();
+  }, []);
   return (
     <Router>
       <ThemeProvider theme={theme}>
-        <ClippedDrawer>
-          <Switch>
-            {/* <Route path='/addreport/new'
-              render={(props) => (
-                <ShiftReport
-                  items={[
-                    <Form onSubmit={submitGroup1} />,
-                    <AdvanceReadingForm onSubmit={submitGroup2} />,
-                    <DipstickReadingForm onSubmit={submitGroup3} />,
-                    <DropForm onSubmit={submitGroup4} />,
-                    <ExpensesForm onSubmit={submitGroup5} />,
-                  ]}
-                  {...props}
-                />
-              )}
-            /> */}
-            <Route
-              exact
-              path="/shift-reports/open/:year/:month/:day/:shift/:placement"
-              render={(props) => <ShiftReport {...props} filledUpBy={1} />}
-            />
-            <Route
-              path="/shift-reports/view/:year/:month"
-              exact
-              component={AddShiftReport}
-            />
-            <Route
-              path="/error-page"
-              render={(props) => <ErrorPage {...props} />}
-            />
-            <Route path={"/shift-reports/download/select/option"}>
-              <DownloadOptions />
-            </Route>
-          </Switch>
-        </ClippedDrawer>
+        <Switch>
+          <Route path="/auth" render={(props) => <Auth {...props} />} />
+          <ProtectedRoute path="/app" component={MainApp} />
+        </Switch>
       </ThemeProvider>
     </Router>
   );
 };
-
-export default App;
+export default connect(null, { loadUser })(App);
