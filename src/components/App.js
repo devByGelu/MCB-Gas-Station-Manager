@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import ClippedDrawer from "./pages/ShiftForm/ClippedDrawer";
 import {
   BrowserRouter as Router,
   Switch,
@@ -30,18 +29,20 @@ import { loadUser } from "../actions";
 import { connect } from "react-redux";
 import Auth from "./pages/Auth/Auth";
 import ProtectedRoute from "./ProtectedRoute";
-import MainApp from "./MainApp";
+import AppDrawer from "./AppDrawer";
 const App = ({ loadUser, auth }) => {
   useEffect(() => {
     loadUser();
-  }, []);
+  });
   return (
     <Router>
       <ThemeProvider theme={theme}>
         <Switch>
           <Route path="/auth" render={(props) => <Auth {...props} />} />
-          <ProtectedRoute path="/shift-reports" component={MainApp} />
-          <ProtectedRoute component={MainApp} />
+          {/* <ProtectedRoute path="/app" component={MainApp} /> */}
+          <ProtectedRoute path="/app" component={AppDrawer} />
+          {/* Fallback route */}
+          <ProtectedRoute component={AppDrawer} />
         </Switch>
       </ThemeProvider>
     </Router>

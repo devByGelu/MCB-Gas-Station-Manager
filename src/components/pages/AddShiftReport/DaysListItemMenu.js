@@ -128,7 +128,7 @@ export default function DaysListItemMenu({
                 key={index}
                 onDoubleClick={() =>
                   history.push(
-                    `/shift-reports/open/${params.year}/${params.month}/${day}/${shift}/${placement}`
+                    `/app/shift-reports/open/${params.year}/${params.month}/${day}/${shift}/${placement}`
                   )
                 }
               >
@@ -170,11 +170,11 @@ export default function DaysListItemMenu({
                   shift == "AM"
                     ? () =>
                         history.push(
-                          `/shift-reports/open/${params.year}/${params.month}/${day}/${shift}/${nextAmPlacement}`
+                          `/app/shift-reports/open/${params.year}/${params.month}/${day}/${shift}/${nextAmPlacement}`
                         )
                     : () =>
                         history.push(
-                          `/shift-reports/open/${params.year}/${params.month}/${day}/${shift}/${nextPmPlacement}`
+                          `/app/shift-reports/open/${params.year}/${params.month}/${day}/${shift}/${nextPmPlacement}`
                         )
                 }
               >

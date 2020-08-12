@@ -16,6 +16,7 @@ import expandedDrawerItemsReducers from "./expandedDrawerItemsReducers";
 import pumpInfoFieldsReducer from "./pumpInfoFieldsReducer";
 import errorReducer from "./errorReducer";
 import authReducer from "./authReducer";
+import authFormReducer from "./authFormReducer";
 export default combineReducers({
   employees: employeesReducer,
   form: formReducer,
@@ -34,4 +35,5 @@ export default combineReducers({
   pumpInfoFields: pumpInfoFieldsReducer,
   errors: errorReducer,
   auth: authReducer,
+  authForm: authFormReducer,
 });

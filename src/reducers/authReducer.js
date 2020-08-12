@@ -1,6 +1,6 @@
 const init = {
   token: localStorage.getItem("token"),
-  isAuthenticated: false,
+  isAuthenticated: localStorage.getItem("token") ? true : false,
   isLoading: false,
   user: null,
 };

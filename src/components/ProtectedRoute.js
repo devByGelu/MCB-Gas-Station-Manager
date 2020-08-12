@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { useHistory, Redirect } from "react-router-dom";
 
-const ProtectedRoute = ({ auth, component }) => {
-  return auth.isAuthenticated ? (
-    <Component />
+const ProtectedRoute = (props) => {
+  return props.auth.isAuthenticated ? (
+    <props.component path={props.path} />
   ) : (
     <Redirect to={{ pathname: "/auth" }} />
   );

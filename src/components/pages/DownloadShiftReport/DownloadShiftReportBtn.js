@@ -5,7 +5,7 @@ import { Button } from "@material-ui/core";
 function DownloadShiftReportBtn(props) {
   const btnProps = {
     variant: "contained",
-    size: "normal",
+    size: "medium",
     color: "primary",
     fullWidth: true,
   };

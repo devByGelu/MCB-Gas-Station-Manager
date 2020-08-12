@@ -10,29 +10,21 @@ import ShiftFormAPI from "../apis/ShiftFormAPI";
 import AuthAPI from "../apis/AuthAPI";
 const dateFormat = require("dateformat");
 
+export const toggleSignInMode = () => ({ type: "TOGGLE_SIGN_IN_MODE" });
+export const logOutUser = () => ({ type: "LOGOUT_SUCCESS" });
 export const loadUser = () => async (dispatch, getState) => {
   dispatch({
     type: "USER_LOADING",
   });
   // Getting token
   try {
-    const response = await AuthAPI.get("/user", tokenConfig(getState));
+    const response = await AuthAPI.get("/user");
     dispatch({ type: "USER_LOADED", payload: response.data });
   } catch (error) {
     const { data, status, message } = error.response;
     dispatch(returnErrors(data, status, message));
     dispatch({ type: "AUTH_ERROR" });
   }
-};
-export const tokenConfig = (getState) => {
-  const token = getState().auth.token;
-  const config = {
-    headers: {
-      "Content-type": "application/json",
-    },
-  };
-  if (token) config.headers["x-auth-token"] = token;
-  return config;
 };
 export const returnErrors = (msg, status, id = null) => ({
   type: "GET_ERRORS",
