@@ -83,74 +83,10 @@ const renderCreditSales = ({
             </Field>
           </Grid>
           <Grid item>
-            <Field
-              disabled={isFieldDisabled}
-              label="Driver"
-              size="small"
-              name={`${field}.driver`}
-              component={renderTextField}
-            />
-          </Grid>
-          <Grid item>
-            <Field
-              disabled={isFieldDisabled}
-              name={`${field}.plateNum`}
-              style={{ width: "100px" }}
-              type="text"
-              size="small"
-              label="Plate#"
-              component={renderTextField}
-            />
-          </Grid>
-          <Grid item>
-            <Field
-              disabled={isFieldDisabled}
-              name={`${field}.invoiceNum`}
-              style={{ width: "70px" }}
-              type="tel"
-              size="small"
-              label="Invoice#"
-              {...createNumberMask({
-                allowNegative: false,
-              })}
-              component={renderTextField}
-            />
-          </Grid>
-
-          <Grid item>
-            <Field
-              disabled={isFieldDisabled}
-              name={`${field}.pName`}
-              style={{ width: "100px" }}
-              component={renderSelectField}
-              label="Fuel Type"
-            >
-              {products.map((prod, index) => (
-                <MenuItem key={prod.pName} value={prod.pName}>
-                  {prod.pName}
-                </MenuItem>
-              ))}
-            </Field>
-          </Grid>
-          <Grid item>
-            <Field
-              disabled={isFieldDisabled}
-              name={`${field}.volume`}
-              size="small"
-              label="Volume"
-              style={{ width: "90px" }}
-              {...createNumberMask({
-                decimalPlaces: 3,
-                allowNegative: false,
-              })}
-              component={renderTextField}
-            />
-          </Grid>
-          <Grid item>
             <CurrencyInput
               disabled={isFieldDisabled}
-              label="Disc. Price"
-              name={`${field}.discountedPrice`}
+              label="Amount"
+              name={`${field}.amount`}
             />
           </Grid>
         </Grid>

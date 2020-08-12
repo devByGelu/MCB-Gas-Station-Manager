@@ -1,5 +1,5 @@
 const validate = (values) => {
-  const errors = {};
+  let errors = {};
   const pumpAttendantsArrayErrors = [];
   const expensesArrayErrors = [];
   const creditsalesArrayErrors = [];
@@ -47,7 +47,7 @@ const validate = (values) => {
         elGroupErrors = { ...elGroupErrors, ...elErrors };
       }
     });
-    errors.group1 = elGroupErrors;
+    if (Object.keys(elGroupErrors).length) errors.group1 = elGroupErrors;
   }
   if (!values.group2) errors.group2 = { diesel: "Required" };
   if (values.group2) {
@@ -65,7 +65,8 @@ const validate = (values) => {
         elGroupErrors = { ...elGroupErrors, ...elErrors };
       }
     });
-    errors.group2 = elGroupErrors;
+    if (Object.keys(elGroupErrors).length) errors.group2 = elGroupErrors;
+    console.log(JSON.stringify(Object.keys(elGroupErrors).length));
   }
   const validatePumpInfo = (pump) => {
     if (!values[pump]) errors[pump] = "Required";
@@ -134,7 +135,7 @@ const validate = (values) => {
           }
         }
       });
-      errors.dropForm = dropFormErrors;
+      if (Object.keys(dropFormErrors).length) errors.dropForm = dropFormErrors;
     }
     if (!values.dropForm) {
       let error = { drops: "Required" };
@@ -173,10 +174,22 @@ const validate = (values) => {
       }
     }
   };
+
   validatePumpInfo("pump1");
   validatePumpInfo("pump2");
   validatePumpInfo("pump3");
   validatePumpInfo("pump4");
+
+  for (let i = 1; i < 5; i++) {
+    validatePumpInfo(`pump${i}`);
+    for (let j = 0; j < products.length; j++) {
+      if (errors[`pump${i}`])
+        if (errors[`pump${i}`][`${products[j]}`])
+          if (!Object.keys(errors[`pump${i}`][`${products[j]}`]).length)
+            errors[`pump${i}`] = undefined;
+    }
+  }
+
   const checkDupes = (el1, el2, fields) => {
     let count = 0;
     fields.forEach((field) => {
@@ -252,30 +265,15 @@ const validate = (values) => {
   if (values.creditsales) {
     values.creditsales.forEach((el, index) => {
       const elErrors = {};
-      const subFields = [
-        "companyName",
-        "driver",
-        "plateNum",
-        "invoiceNum",
-        "pName",
-        "volume",
-        "discountedPrice",
-      ];
+      const subFields = ["companyName", "amount"];
       subFields.forEach((subField) => {
         if (!el || !el[subField]) {
           elErrors[subField] = "Required";
           creditsalesArrayErrors[index] = elErrors;
         } else {
           if (
-            subField === "discountedPrice" &&
-            parseFloat(el[subField]) > parseFloat(99.99)
-          ) {
-            elErrors[subField] = "Invalid";
-            creditsalesArrayErrors[index] = elErrors;
-          }
-          if (
-            subField === "volume" &&
-            parseFloat(el[subField]) > parseFloat(999999.999)
+            subField === "amount" &&
+            parseFloat(el[subField]) > parseFloat(999999999.99)
           ) {
             elErrors[subField] = "Invalid";
             creditsalesArrayErrors[index] = elErrors;
@@ -283,11 +281,6 @@ const validate = (values) => {
         }
       });
     });
-    checkFieldArrayDuplicates(
-      values.creditsales,
-      ["companyName", "plateNum", "invoiceNum", "pName"],
-      creditsalesArrayErrors
-    );
   }
 
   if (expensesArrayErrors.length) errors.expenses = expensesArrayErrors;
@@ -300,6 +293,10 @@ const validate = (values) => {
 
   if (pumpAttendantsArrayErrors.length)
     errors.pumpAttendants = pumpAttendantsArrayErrors;
+  if (JSON.stringify(errors) === "{}") {
+    alert("There were no errors");
+    return undefined;
+  }
   return errors;
 };
 export default validate;

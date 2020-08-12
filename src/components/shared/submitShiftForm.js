@@ -71,7 +71,7 @@ const submitShiftForm = async (values, dispatch, props) => {
       const lastDropBreakDown = { ...values.breakdown };
       // Cash Advance
       let cashAdvances = [];
-      if (props.cashadvance.length) {
+      if (values.cashadvance.length) {
         values.cashadvance.forEach((cashadvance) =>
           cashAdvances.push({
             eId: cashadvance.employee,
@@ -81,7 +81,7 @@ const submitShiftForm = async (values, dispatch, props) => {
       } else cashAdvances = undefined;
       //  Expenses
       let expenses = [];
-      if (props.expenses.length) {
+      if (values.expenses.length) {
         values.expenses.forEach((expense) => {
           if (expense.description != null && expense.catName != null) {
             expenses.push({ expense });
@@ -90,7 +90,7 @@ const submitShiftForm = async (values, dispatch, props) => {
       } else expenses = undefined;
       //   Credit sales
       let creditSales = [];
-      if (props.creditsales.length) creditSales = values.creditsales;
+      if (values.creditsales.length) creditSales = values.creditsales;
       else creditSales = undefined;
 
       const { filledUpBy } = props;
@@ -142,6 +142,7 @@ const submitShiftForm = async (values, dispatch, props) => {
         }
         resolve();
       } catch (error) {
+        console.log(error);
         reject(
           new SubmissionError({ _error: "Failed to submit shift report" })
         );

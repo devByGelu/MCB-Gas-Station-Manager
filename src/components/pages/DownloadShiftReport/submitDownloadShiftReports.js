@@ -15,10 +15,6 @@ const submitDownloadShiftReports = async (values, dispatch, props) => {
     FileSaver.saveAs(response.data, suggestedFileName);
   } catch (error) {
     if (!error.response) throw new SubmissionError({ _error: "BRUH" });
-    if (error.response.status === 401)
-      throw new SubmissionError({ _error: "Unauthorized" });
-    else if (error.response.status >= 500)
-      throw new SubmissionError({ _error: "Unexpected Error occured" });
     else throw new SubmissionError(error.response.data.errors);
   }
 };

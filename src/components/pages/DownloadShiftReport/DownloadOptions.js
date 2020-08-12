@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Grid, Button, Typography } from "@material-ui/core";
+import { Grid, Button, Typography, Box } from "@material-ui/core";
 import { useRouteMatch, useHistory, Route, useParams } from "react-router-dom";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import DateRangeIcon from "@material-ui/icons/DateRange";
@@ -10,6 +10,7 @@ import renderTextField from "../../shared/renderTextField";
 import DownloadShiftReportBtn from "./DownloadShiftReportBtn";
 import submitDownloadShiftReports from "./submitDownloadShiftReports";
 import Alert from "@material-ui/lab/Alert";
+const dateFormat = require("dateformat");
 const fieldProps = {
   size: "small",
   type: "date",
@@ -33,35 +34,31 @@ function DownloadOptions({ handleSubmit, submitting, error }) {
           alignItems="center"
           justify="center"
           md={3}
+          sm={5}
+          xs={8}
           spacing={1}
         >
-          <Grid item>
-            <DateRangeIcon />
-          </Grid>
-          <Grid item>
-            <Typography>Select a timeframe</Typography>
-          </Grid>
-          <Grid item xs={6} sm={12}>
-            <Field
-              {...fieldProps}
-              name="startDate"
-              label="Start"
-              margin="normal"
-            />
-          </Grid>
-          <Grid item xs={6} sm={12}>
-            <Field {...fieldProps} name="endDate" label="End" margin="normal" />
-          </Grid>
+          <Box width="100%">
+            <Alert severity="info">Select Range</Alert>
+          </Box>
+
+          <Field
+            {...fieldProps}
+            name="startDate"
+            label="Start"
+            margin="normal"
+          />
+          <Field {...fieldProps} name="endDate" label="End" margin="normal" />
           {submitting ? (
             <></>
           ) : error ? (
-            <Alert severity="error">{error}</Alert>
+            <Box marginBottom={2} width="100%">
+              <Alert severity="warning">{error}</Alert>
+            </Box>
           ) : (
             <></>
           )}
-          <Grid item align="center" xs={12}>
-            <DownloadShiftReportBtn />
-          </Grid>
+          <DownloadShiftReportBtn />
         </Grid>
       </Grid>
     </form>
@@ -74,6 +71,10 @@ export default connect(
 )(
   reduxForm({
     form: "shiftReportDownloadForm",
+    initialValues: {
+      startDate: dateFormat(new Date(), "yyyy-mm-dd"),
+      endDate: dateFormat(new Date(), "yyyy-mm-dd"),
+    },
     onSubmit: submitDownloadShiftReports,
     onChange: (values, dispatch, props) => {
       if (props.error) dispatch(clearSubmitErrors("shiftReportDownloadForm"));
