@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
-import SelectedDayPanel from "../../shared/SelectedDayPanel";
 import { connect } from "react-redux";
 import TodayReminder from "../../shared/TodayReminder/TodayReminder";
 import PreviousReminder from "../../shared/PreviousReminder/PreviousReminder";
-// import OutlinedCard from '../../shared/DaysListPanel'
 import DaysList from "./DaysList";
 import DaysListPanel from "../../shared/DaysListPanel";
 import { useParams } from "react-router-dom";

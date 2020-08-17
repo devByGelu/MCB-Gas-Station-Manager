@@ -9,7 +9,6 @@ import DaysList from "../pages/AddShiftReport/DaysList";
 import FormCard from "../pages/AddShiftReport/ShiftReport/FormCard";
 import { fetchMonthForms } from "../../actions";
 import { connect } from "react-redux";
-import SelectedDayPanel from "./SelectedDayPanel";
 import Skeleton from "@material-ui/lab/Skeleton";
 const dateFormat = require("dateformat");
 const DaysListPanel = ({ year, month, fetchMonthForms, monthForms }) => {
@@ -18,8 +17,7 @@ const DaysListPanel = ({ year, month, fetchMonthForms, monthForms }) => {
   }, [year, month]);
 
   if (monthForms.error) return <>An error occured</>;
-  // else if (monthForms.loading || !monthForms.results) return <Skeleton />;
-  // else {
+
   const d = new Date(year, parseInt(month) - 1);
   let title = dateFormat(d, "mmmm, yyyy");
   return (

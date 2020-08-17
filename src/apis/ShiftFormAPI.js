@@ -9,7 +9,6 @@ let ShiftFormAPI = axios.create({
 ShiftFormAPI.interceptors.request.use(
   function (config) {
     const token = store.getState().auth.token;
-    alert(token);
     if (token) config.headers["x-auth-token"] = token;
     return config;
   },

@@ -122,7 +122,6 @@ const submitShiftForm = async (values, dispatch, props) => {
           // clear shiftFormNotFound and append fId
           props.setShiftFormCreated(response.data.fId);
         } else {
-          alert(JSON.stringify(values));
           await ShiftFormAPI.patch(`/${props.formData.results.fId}`, {
             form,
             shiftEmployees,
